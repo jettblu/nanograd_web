@@ -1,0 +1,16 @@
+[package]
+name = "nanograd_web"
+version = "0.1.0"
+authors = ["Jett Hays <jettblu.fabrications@gmail.com>"]
+description = "Nanograd on the web."
+license = "MIT/Apache-2.0"
+repository = "https://github.com/jettblu/nanograd"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.87"
+nanograd = "0.1.2"
+js-sys = "0.3.45"
