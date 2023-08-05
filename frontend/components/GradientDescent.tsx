@@ -16,8 +16,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
-import { time } from "console";
 
 ChartJS.register(
   CategoryScale,
