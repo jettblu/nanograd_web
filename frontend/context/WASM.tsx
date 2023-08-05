@@ -3,7 +3,9 @@
 import { useState, createContext } from "react";
 import type { ReactNode } from "react";
 
-const initial: IWASMContext = {};
+const initial: IWASMContext = {
+  loadWASM: async () => false,
+};
 
 export const WASMContext = createContext(initial);
 
@@ -19,7 +21,7 @@ export const WASMContextProvider: React.FC<WASMContextProviderProps> = ({
     const nanograd = await import("nanograd_web");
     await nanograd.default();
     console.log("WASM loaded");
-    setState({ nanograd });
+    setState({ nanograd, loadWASM: loadWASMInternal });
     return true;
   }
   const [state, setState] = useState<IWASMContext>({
@@ -38,7 +40,7 @@ export const WASMContextProvider: React.FC<WASMContextProviderProps> = ({
 
 interface IWASMContext {
   nanograd?: typeof import("nanograd_web");
-  loadWASM?: () => Promise<boolean>;
+  loadWASM: () => Promise<boolean>;
 }
 
 interface WASMContextProviderProps {
