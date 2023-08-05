@@ -199,7 +199,7 @@ export function GradientDescent() {
         </div>
       </div>
       <div className="flex flex-col space-y-2 lg:w-1/2 mx-auto w-full mt-4">
-        <div className="flex flex-row space-x-3 max-w-lg mx-auto">
+        <div className="flex flex-row space-x-4 max-w-lg mx-auto">
           <div
             className={`text-gray-500 text-md ${
               resultView == ResultView.Epochs &&
