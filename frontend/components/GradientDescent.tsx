@@ -5,27 +5,8 @@ import InputNumber from "./InputNumber";
 import { WASMContext } from "@/context/WASM";
 import CardEpoch from "./CardEpoch";
 import { TrainingResult } from "nanograd_web";
-import { Chart } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import ChartLine from "./ChartLine";
+import SelectLayers from "./SelectLayers";
 
 export interface LearningEpoch {
   epoch: number;
@@ -60,10 +41,9 @@ export function GradientDescent() {
     new Uint32Array([4, 3])
   );
   const [epochs, setEpochs] = useState<LearningEpoch[]>([]);
-  const [chartData, setChartData] = useState<IChartData | null>(null);
+
   const [timeToTrain, setTimeToTrain] = useState<number>(0);
   const [assetId, setAssetId] = useState("");
-  const chartRef = useRef<ChartJS | null>(null);
 
   const handleSetLearningRate = (val: number) => {
     setLearningRate(val);
@@ -71,6 +51,9 @@ export function GradientDescent() {
   const handleSetNumberOfEpochs = (val: number) => {
     setNumberOfEpochs(val);
   };
+  function handleUpdateLayerDims(newDims: Uint32Array) {
+    setHiddenLayerDims(newDims);
+  }
   async function runGradientDescent() {
     if (!ctx.nanograd) {
       console.warn("WASM not loaded");
@@ -110,7 +93,6 @@ export function GradientDescent() {
 
   function handleReset() {
     setEpochs([]);
-    setChartData(null);
     setTimeToTrain(0);
     setTrainingResult(null);
   }
@@ -120,24 +102,6 @@ export function GradientDescent() {
       runGradientDescent();
     }
   }, [runningDescent]);
-  useEffect(() => {
-    if (!trainingResult) {
-      return;
-    }
-    const newData: IChartData = {
-      labels: epochs.map((epoch) => epoch.epoch),
-      datasets: [
-        {
-          label: "Loss",
-          data: trainingResult.get_loss,
-          // purple
-          borderColor: "rgba(103, 8, 123, 1)",
-          tension: 0.1,
-        },
-      ],
-    };
-    setChartData(newData);
-  }, [trainingResult]);
 
   const chartOptions = {
     responsive: true,
@@ -180,6 +144,7 @@ export function GradientDescent() {
             defaultValue={100}
             changeHandler={handleSetNumberOfEpochs}
           />
+          <SelectLayers changeHandler={handleUpdateLayerDims} />
           <div className="flex flex-row space-x-4">
             <div
               className="bg-purple-400/20 text-xl ring-1 ring-purple-400/80 text-white text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
@@ -253,14 +218,11 @@ export function GradientDescent() {
             </div>
           </div>
         )}
-        {resultView === ResultView.Graph && chartData && (
+        {resultView === ResultView.Graph && (
           <div>
-            <Chart
-              data={chartData}
-              type="line"
-              width={400}
-              height={400}
-              options={chartOptions}
+            <ChartLine
+              data={trainingResult ? trainingResult.get_loss : []}
+              clear={!trainingResult}
             />
           </div>
         )}
@@ -268,14 +230,15 @@ export function GradientDescent() {
           <div className="flex flex-col max-w-lg rounded-lg mx-auto w-full text-2xl space-y-2">
             <div className="flex flex-row bg-gray-500/20 rounded-md px-2 hover:brightness-110 py-1">
               <div className="w-1/2 lg:w-1/4 text-gray-500">Time</div>
-              {/* show time to train in seconds */}
-              <div
-                className={`w-1/2 lg:w-3/4  ${
-                  timeToTrain < 10000 && "text-green-400"
-                }`}
-              >
-                {trainingResult && (timeToTrain / 1000).toFixed(2)}s
-              </div>
+              {trainingResult && (
+                <div
+                  className={`w-1/2 lg:w-3/4  ${
+                    timeToTrain < 10000 && "text-green-400"
+                  }`}
+                >
+                  {trainingResult && (timeToTrain / 1000).toFixed(2)}s
+                </div>
+              )}
             </div>
             <div className="flex flex-row bg-gray-500/20 rounded-md px-2 hover:brightness-110 py-1">
               <div className="w-1/2 lg:w-1/4 text-gray-500">Layers</div>
