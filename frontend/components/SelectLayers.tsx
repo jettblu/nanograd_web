@@ -56,7 +56,7 @@ export default function SelectLayers(params: {
     changeHandler(layers);
   }, [layers]);
   return (
-    <div className="w-full bg-gray-500/10 transition-colors duration-500 ring-2 ring-gray-700/20 rounded-md">
+    <div className="w-full bg-gray-500/10 transition-colors duration-300 ring-2 ring-gray-700/30 rounded-md">
       <p className="text-sm text-left py-1 px-1 rounded-tr-md rounded-tl-md">
         Hidden Layers
       </p>
@@ -73,7 +73,7 @@ export default function SelectLayers(params: {
         ))}
       </div>
       <div
-        className="bg-gray-500/10 rounded-br-md rounded-bl-md px-2 py-3 hover:cursor-pointer mt-4 hover:bg-purple-900/10 transition-colors duration-500"
+        className="bg-gray-500/30 rounded-br-md rounded-bl-md px-2 py-3 hover:cursor-pointer mt-4 hover:bg-purple-800/20 transition-colors duration-300"
         onClick={() => handleAddLayer(3)}
       >
         Add Layer

@@ -1782,10 +1782,10 @@ mz@^2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nanograd_web@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/nanograd_web/-/nanograd_web-0.1.7.tgz#142674397aff90fa5c3d1e80081eaa985b8795fe"
-  integrity sha512-sy7BOh+BI1CCgIPyYx1O4tlhAaW42xbB2bebqpAMkjNHpod4CfK13B403DKvAOZ3cEAaKe8Dr3o3Kzo1GcIWzg==
+nanograd_web@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/nanograd_web/-/nanograd_web-0.2.3.tgz#3c4535f5e516671e69bbf428294a12d1ef45d06c"
+  integrity sha512-MtHyFl779bTvN/td02+5+HbhRwUQuBt5dUVHiyZTWUpAzEjC5UqDYlTqOfzN/xV7TSROcS0CfrWIJJ07eELkdg==
 
 nanoid@^3.3.4, nanoid@^3.3.6:
   version "3.3.6"

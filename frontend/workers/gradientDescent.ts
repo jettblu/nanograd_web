@@ -1,10 +1,13 @@
 import { TrainingResult } from "nanograd_web";
-import { NNResponse, ResponseType } from "./types";
+import { NNRequest, NNResponse, ResponseType } from "./types";
+import { loadData } from "@/data";
+import { DatasetName } from "@/data/types";
 
 let nanograd: typeof import("nanograd_web") | null = null;
 
-onmessage = (msg) => {
-  const { learningRate, numberOfEpochs, hiddenLayerDims } = msg.data;
+onmessage = (msg: MessageEvent<NNRequest>) => {
+  const { learningRate, numberOfEpochs, hiddenLayerDims, datasetName } =
+    msg.data;
   console.log("Message received from main script");
   let response: NNResponse = {
     type: ResponseType.Error,
@@ -27,6 +30,7 @@ onmessage = (msg) => {
     return;
   }
   const { trainingResult, timeToTrain } = handleRunSample({
+    datasetName,
     learningRate,
     numberOfEpochs,
     hiddenLayerDims,
@@ -58,6 +62,7 @@ type RunResult = {
   timeToTrain: number;
 };
 function handleRunSample(params: {
+  datasetName: DatasetName;
   learningRate: number;
   numberOfEpochs: number;
   hiddenLayerDims: Uint32Array;
@@ -68,11 +73,17 @@ function handleRunSample(params: {
       timeToTrain: 0,
     };
   }
-  const { learningRate, numberOfEpochs, hiddenLayerDims } = params;
+  const { learningRate, numberOfEpochs, hiddenLayerDims, datasetName } = params;
   console.log(params);
   // start timer
   const start = performance.now();
+  const dataString = loadDataString(datasetName);
+  if (dataString === "") {
+    console.warn("Unable to load data string.");
+    return { timeToTrain: 0 };
+  }
   const res = nanograd.run_gradient_sample(
+    dataString,
     learningRate,
     numberOfEpochs,
     hiddenLayerDims,
@@ -92,6 +103,11 @@ function handleUpdate(val: number) {
   postMessage(response);
 }
 
+function loadDataString(name: DatasetName) {
+  if (!nanograd) return "";
+  const data = loadData(name);
+  return JSON.stringify(data);
+}
 function loadNanograd() {
   import("nanograd_web").then((n) => {
     console.log("nanograd loaded in worker");

@@ -11,6 +11,8 @@ import {
   DEFAULT_LEARNING_RATE,
   DEFAULT_NUMBER_OF_EPOCHS,
 } from "@/constants/network";
+import { DatasetName } from "@/data/types";
+import { SelectDataset } from "./SelectDataset";
 
 export interface LearningEpoch {
   epoch: number;
@@ -54,6 +56,9 @@ export function GradientDescent() {
   );
   const [numRetries, setNumRetries] = useState(0);
   const [currTrainingEpoch, setCurrTrainingEpoch] = useState<number>(0);
+  const [datasetName, setDatasetName] = useState<DatasetName>(
+    DatasetName.Spiral
+  );
 
   nnWorker.current.onmessage = handleWorkerMessage;
 
@@ -69,11 +74,16 @@ export function GradientDescent() {
   function runGradientDescent() {
     setCurrTrainingEpoch(0);
     nnWorker.current.postMessage({
+      datasetName: datasetName,
       learningRate,
       numberOfEpochs,
       hiddenLayerDims,
     });
     setRunningDescent(true);
+  }
+
+  function handleSelectDataset(datasetName: DatasetName) {
+    setDatasetName(datasetName);
   }
 
   function handleWorkerMessage(e: MessageEvent<NNResponse>) {
@@ -182,6 +192,10 @@ export function GradientDescent() {
             label="Number of Epochs"
             defaultValue={100}
             changeHandler={handleSetNumberOfEpochs}
+          />
+          <SelectDataset
+            handleSelect={handleSelectDataset}
+            selected={datasetName}
           />
           <SelectLayers changeHandler={handleUpdateLayerDims} />
           <div className="flex flex-row space-x-4">

@@ -1,4 +1,4 @@
-import { TrainingResult } from "nanograd_web";
+import { DatasetName } from "@/data/types";
 
 export type NNResponse = {
   trainingResult?: ITrainingResult;
@@ -13,6 +13,13 @@ export enum ResponseType {
   Error = "Error",
   Update = "Update",
 }
+
+export type NNRequest = {
+  learningRate: number;
+  numberOfEpochs: number;
+  hiddenLayerDims: Uint32Array;
+  datasetName: DatasetName;
+};
 
 export type ITrainingResult = {
   readonly get_loss: Float64Array;

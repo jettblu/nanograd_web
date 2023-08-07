@@ -65,6 +65,7 @@ export default function ChartLine(params: {
     if (clear) {
       setChartData(null);
       setShowChart(false);
+      return;
     }
     setShowChart(true);
   }, [clear]);
@@ -89,9 +90,10 @@ export default function ChartLine(params: {
     <Chart
       data={chartData}
       type="line"
-      width={400}
-      height={400}
+      width={300}
+      height={300}
       options={chartOptions}
+      className="mx-auto lg:mx-2"
     />
   ) : (
     <div className="w-96 h-96 bg-gray-500/20 rounded-md flex items-center justify-center mx-auto">
