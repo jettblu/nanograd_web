@@ -1,12 +1,16 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import InputNumber from "./InputNumber";
 import { WASMContext } from "@/context/WASM";
 import CardEpoch from "./CardEpoch";
-import { TrainingResult } from "nanograd_web";
 import ChartLine from "./ChartLine";
 import SelectLayers from "./SelectLayers";
+import { ITrainingResult, NNResponse, ResponseType } from "@/workers/types";
+import {
+  DEFAULT_LEARNING_RATE,
+  DEFAULT_NUMBER_OF_EPOCHS,
+} from "@/constants/network";
 
 export interface LearningEpoch {
   epoch: number;
@@ -29,21 +33,29 @@ interface IChartData {
 }
 
 export function GradientDescent() {
+  const MAX_RETRIES = 5;
   const [learningRate, setLearningRate] = useState(0.05);
   const [numberOfEpochs, setNumberOfEpochs] = useState(100);
   const ctx = useContext(WASMContext);
   const [runningDescent, setRunningDescent] = useState(false);
   const [resultView, setResultView] = useState<ResultView>(ResultView.Epochs);
-  const [trainingResult, setTrainingResult] = useState<TrainingResult | null>(
+  const [trainingResult, setTrainingResult] = useState<ITrainingResult | null>(
     null
   );
   const [hiddenLayerDims, setHiddenLayerDims] = useState<Uint32Array>(
     new Uint32Array([4, 3])
   );
   const [epochs, setEpochs] = useState<LearningEpoch[]>([]);
-
-  const [timeToTrain, setTimeToTrain] = useState<number>(0);
+  //formatted in seconds
+  const [timeToTrain, setTimeToTrain] = useState<string>("");
   const [assetId, setAssetId] = useState("");
+  const nnWorker = useRef<Worker>(
+    new Worker(new URL("../workers/gradientDescent", import.meta.url))
+  );
+  const [numRetries, setNumRetries] = useState(0);
+  const [currTrainingEpoch, setCurrTrainingEpoch] = useState<number>(0);
+
+  nnWorker.current.onmessage = handleWorkerMessage;
 
   const handleSetLearningRate = (val: number) => {
     setLearningRate(val);
@@ -54,54 +66,81 @@ export function GradientDescent() {
   function handleUpdateLayerDims(newDims: Uint32Array) {
     setHiddenLayerDims(newDims);
   }
-  async function runGradientDescent() {
-    if (!ctx.nanograd) {
-      console.warn("WASM not loaded");
-      return;
-    }
-    // start timer
-
-    console.log("Running gradient descent sample...");
-    const nanograd = ctx.nanograd;
-    const startTime = performance.now();
-    const newTrainingResult = nanograd.run_gradient_sample(
+  function runGradientDescent() {
+    setCurrTrainingEpoch(0);
+    nnWorker.current.postMessage({
       learningRate,
       numberOfEpochs,
       hiddenLayerDims,
-      handleUpdate
-    );
-    const endTime = performance.now();
-    setTimeToTrain(endTime - startTime);
-    console.log("Training result: ", newTrainingResult);
-    console.log("Loss: ", newTrainingResult.get_loss);
-    setTrainingResult(newTrainingResult);
-    console.log("Gradient descent sample finished");
-    // create new epochs array
-    const newEpochs: LearningEpoch[] = [];
-    for (let i = 0; i < newTrainingResult.get_loss.length; i++) {
-      newEpochs.push({
-        epoch: i,
-        loss: newTrainingResult.get_loss[i],
-      });
-    }
-    setEpochs(newEpochs);
-    setRunningDescent(false);
+    });
+    setRunningDescent(true);
   }
-  function handleUpdate(val: number) {
-    console.log("Epoch loss: ", val);
+
+  function handleWorkerMessage(e: MessageEvent<NNResponse>) {
+    console.log("Message from worker: ", e.data);
+    const res = e.data;
+    switch (res.type) {
+      case ResponseType.Error:
+        if (numRetries <= MAX_RETRIES) {
+          setNumRetries(numRetries + 1);
+          console.log("Retrying...");
+          // pause for 1 second
+          setTimeout(() => {
+            runGradientDescent();
+          }, 1000);
+        } else {
+          console.error("Max retries reached. Exiting.");
+        }
+        break;
+      case ResponseType.Done:
+        if (!res.trainingResult) {
+          console.warn("No data returned from worker.");
+          return;
+        }
+        const newTrainingResult = res.trainingResult;
+        const newTimeToTrain = formatTime(res.timeToTrain);
+        console.log("Training result: ", newTrainingResult);
+        console.log("Loss: ", newTrainingResult.get_loss);
+        setTimeToTrain(newTimeToTrain);
+        setRunningDescent(false);
+        setTrainingResult(newTrainingResult);
+        const newEpochs: LearningEpoch[] = [];
+        for (let i = 0; i < numberOfEpochs; i++) {
+          newEpochs.push({
+            epoch: i,
+            loss: newTrainingResult.get_loss[i],
+          });
+        }
+        setEpochs(newEpochs);
+        break;
+      case ResponseType.Update:
+        if (!res.dataFromUpdate) {
+          console.warn("No data returned from worker.");
+          return;
+        }
+        setCurrTrainingEpoch(currTrainingEpoch + 1);
+        break;
+      default:
+        console.warn("Unknown response type from worker: ", res.type);
+        return;
+    }
+  }
+
+  function formatTime(val?: number) {
+    if (!val) return "";
+    const numSecs = val / 1000;
+    const formattedTime = numSecs.toFixed(2).toString() + "s";
+    return formattedTime;
   }
 
   function handleReset() {
     setEpochs([]);
-    setTimeToTrain(0);
+    setTimeToTrain("");
     setTrainingResult(null);
+    setCurrTrainingEpoch(0);
+    setLearningRate(DEFAULT_LEARNING_RATE);
+    setNumberOfEpochs(DEFAULT_NUMBER_OF_EPOCHS);
   }
-
-  useEffect(() => {
-    if (runningDescent) {
-      runGradientDescent();
-    }
-  }, [runningDescent]);
 
   const chartOptions = {
     responsive: true,
@@ -148,7 +187,7 @@ export function GradientDescent() {
           <div className="flex flex-row space-x-4">
             <div
               className="bg-purple-400/20 text-xl ring-1 ring-purple-400/80 text-white text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
-              onClick={() => setRunningDescent(true)}
+              onClick={() => runGradientDescent()}
             >
               Run
             </div>
@@ -199,7 +238,10 @@ export function GradientDescent() {
             <div className="px-2 py-2">
               {runningDescent && (
                 <div className="text-md text-center text-gray-500">
-                  Loading...
+                  <p>Loading...</p>
+                  <p>
+                    Trained {currTrainingEpoch}/{numberOfEpochs} epochs
+                  </p>
                 </div>
               )}
               {!runningDescent && (
@@ -231,12 +273,8 @@ export function GradientDescent() {
             <div className="flex flex-row bg-gray-500/20 rounded-md px-2 hover:brightness-110 py-1">
               <div className="w-1/2 lg:w-1/4 text-gray-500">Time</div>
               {trainingResult && (
-                <div
-                  className={`w-1/2 lg:w-3/4  ${
-                    timeToTrain < 10000 && "text-green-400"
-                  }`}
-                >
-                  {trainingResult && (timeToTrain / 1000).toFixed(2)}s
+                <div className={`w-1/2 lg:w-3/4`}>
+                  {trainingResult && timeToTrain}
                 </div>
               )}
             </div>

@@ -16,7 +16,7 @@ export const WASMContextProvider: React.FC<WASMContextProviderProps> = ({
     try {
       if (state.nanograd) {
         console.log("WASM already loaded");
-        return false;
+        return true;
       }
       console.log("Loading WASM...");
       const nanograd = await import("nanograd_web");
