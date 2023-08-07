@@ -1,0 +1,3 @@
+export const DEFAULT_HIDDEN_LAYER_SIZES = [2, 3];
+export const DEFAULT_LEARNING_RATE = 0.05;
+export const DEFAULT_NUMBER_OF_EPOCHS = 100;
