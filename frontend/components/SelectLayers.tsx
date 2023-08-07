@@ -18,6 +18,10 @@ export default function SelectLayers(params: {
     setLayers(newLayers);
   }
   function handleRemoveLayer(index: number) {
+    if (layers.length == 1) {
+      console.warn("Cannot remove last layer");
+      return;
+    }
     setLayers(layers.filter((_, i) => i != index));
   }
   function handleIncrementLayerSize(index: number) {
@@ -134,6 +138,6 @@ function Layer(params: {
 
 function Neuron() {
   return (
-    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-700 to-gray-500"></div>
+    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-700/80 to-gray-500/80"></div>
   );
 }
