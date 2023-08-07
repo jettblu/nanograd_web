@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import InputNumber from "./InputNumber";
 import { WASMContext } from "@/context/WASM";
 import CardEpoch from "./CardEpoch";
@@ -51,16 +51,20 @@ export function GradientDescent() {
   //formatted in seconds
   const [timeToTrain, setTimeToTrain] = useState<string>("");
   const [assetId, setAssetId] = useState("");
-  const nnWorker = useRef<Worker>(
-    new Worker(new URL("../workers/gradientDescent", import.meta.url))
-  );
+  const nnWorker = useRef<Worker | null>(null);
   const [numRetries, setNumRetries] = useState(0);
   const [currTrainingEpoch, setCurrTrainingEpoch] = useState<number>(0);
   const [datasetName, setDatasetName] = useState<DatasetName>(
     DatasetName.Spiral
   );
 
-  nnWorker.current.onmessage = handleWorkerMessage;
+  useEffect(() => {
+    const newWorker = new Worker(
+      new URL("../workers/gradientDescent", import.meta.url)
+    );
+    newWorker.onmessage = handleWorkerMessage;
+    nnWorker.current = newWorker;
+  }, []);
 
   const handleSetLearningRate = (val: number) => {
     setLearningRate(val);
@@ -73,6 +77,10 @@ export function GradientDescent() {
   }
   function runGradientDescent() {
     setCurrTrainingEpoch(0);
+    if (!nnWorker.current) {
+      console.error("No worker found.");
+      return;
+    }
     nnWorker.current.postMessage({
       datasetName: datasetName,
       learningRate,
