@@ -9,10 +9,10 @@ import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
  * @returns true if the prediction is positive, false otherwise
  */
 function classify(pred: number) {
-  if (pred > 0.5) {
+  if (pred > 0) {
     return true;
   }
-  if (pred < 0.5) {
+  if (pred < 0) {
     return true;
   }
   return false;

@@ -35,7 +35,7 @@ for data in dataArray:
         x = observation["features"][0]
         y = observation["features"][1]
         label = observation["label"]
-        color = "purple" if label == 0 else "#f52ce4"
+        color = "purple" if label == -1 else "#f52ce4"
         xs.append(x)
         ys.append(y)
         labels.append(label)

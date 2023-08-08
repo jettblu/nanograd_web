@@ -31,7 +31,7 @@ def DataGenerator(numSamples, noise, type):
             def genGauss(cx, cy, indicator):
                 x = random.gauss(cx, variance)
                 y = random.gauss(cy, variance)
-                return {"features":[x, y], "label": 0 if indicator else 1}
+                return {"features":[x, y], "label": -1 if indicator else 1}
 
             for i in range(numSamples//2):
                 points.append(genGauss(-2,3, True))
@@ -52,7 +52,7 @@ def DataGenerator(numSamples, noise, type):
                 inner_scatter = inner_radius * np.array([np.cos(inner_theta), np.sin(inner_theta)]) + np.random.rand(2, numSamples//2) * 1
                 # return point objects
                 for i in range(numSamples//2):
-                    points.append({"features":[inner_scatter[0][i], inner_scatter[1][i]], "label": 0})
+                    points.append({"features":[inner_scatter[0][i], inner_scatter[1][i]], "label": -1})
                     points.append({"features":[outer_scatter[0][i], outer_scatter[1][i]], "label": 1})
 
             
@@ -63,7 +63,7 @@ def DataGenerator(numSamples, noise, type):
                  t = 1.75 * i / n * 2 * math.pi + deltaT
                  x = r * math.sin(t) + random.uniform(-1, 1) * noise
                  y = r * math.cos(t) + random.uniform(-1, 1) * noise
-                 return {"features":[x, y], "label": 0 if indicator else 1}
+                 return {"features":[x, y], "label": -1 if indicator else 1}
 
             for i in range(numSamples//2):
                 points.append(genSpiral(0, False))
@@ -73,7 +73,7 @@ def DataGenerator(numSamples, noise, type):
             def genXor(cx, cy):
                 x = random.uniform(cx - 0.5, cx + 0.5)
                 y = random.uniform(cy - 0.5, cy + 0.5)
-                return {"features":[x, y], "label": 0 if x * y > 0 else 1}
+                return {"features":[x, y], "label": -1 if x * y > 0 else 1}
 
             for i in range(numSamples):
                 points.append(genXor(0, 0))
