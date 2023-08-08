@@ -48,10 +48,10 @@ export function newTrainingResult(params: {
     if (isPredPositive && actual === 1) {
       train_truepositives.push(data[i]);
     }
-    if (isPredPositive && actual === 0) {
+    if (isPredPositive && actual === -1) {
       train_falsepositives.push(data[i]);
     }
-    if (!isPredPositive && actual === 0) {
+    if (!isPredPositive && actual === -1) {
       train_truenegatives.push(data[i]);
     }
     if (!isPredPositive && actual === 1) {
@@ -70,10 +70,10 @@ export function newTrainingResult(params: {
     if (isPredPositive && actual === 1) {
       test_truepositives.push(data[i + trainCount]);
     }
-    if (isPredPositive && actual === 0) {
+    if (isPredPositive && actual === -1) {
       test_falsepositives.push(data[i + trainCount]);
     }
-    if (!isPredPositive && actual === 0) {
+    if (!isPredPositive && actual === -1) {
       test_truenegatives.push(data[i + trainCount]);
     }
     if (!isPredPositive && actual === 1) {
