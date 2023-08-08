@@ -4,16 +4,15 @@ import { ITrainingResult } from "./types";
 import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
 
 /**
- * Classifies a prediction as correct or incorrect
- * @param pred The predicted value
- * @param actual The actual value
- * @returns true if the prediction is correct, false otherwise
+ * Classifies a prediction
+ * @param pred The predicted value.. typically a float between 0 and 1
+ * @returns true if the prediction is positive, false otherwise
  */
-function classify(pred: number, actual: number) {
-  if (pred > 0.5 && actual === 1) {
+function classify(pred: number) {
+  if (pred > 0.5) {
     return true;
   }
-  if (pred < 0.5 && actual === 0) {
+  if (pred < 0.5) {
     return true;
   }
   return false;
@@ -44,7 +43,8 @@ export function newTrainingResult(params: {
   for (let i = 0; i < trainPreds.length; i++) {
     const pred = trainPreds[i];
     const actual = data[i].label;
-    const isPredPositive = classify(pred, actual);
+    const isPredPositive = classify(pred);
+    console.log(pred, actual, isPredPositive);
     if (isPredPositive && actual === 1) {
       train_truepositives.push(data[i]);
     }
@@ -66,7 +66,7 @@ export function newTrainingResult(params: {
   for (let i = 0; i < testPreds.length; i++) {
     const pred = testPreds[i];
     const actual = data[i + trainCount].label;
-    const isPredPositive = classify(pred, actual);
+    const isPredPositive = classify(pred);
     if (isPredPositive && actual === 1) {
       test_truepositives.push(data[i + trainCount]);
     }

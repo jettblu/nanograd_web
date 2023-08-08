@@ -16,6 +16,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+
   Title,
   Tooltip,
   Legend
@@ -54,7 +55,7 @@ interface IChartData {
 export interface IChartDataset {
   label: string;
   data: NumericalData;
-  borderColor: CanvasGradient | string | undefined;
+  borderColor: CanvasGradient | string | undefined | string[];
   backgroundColor?: string[] | string;
   pointStyle?: string;
   borderWidth?: number;

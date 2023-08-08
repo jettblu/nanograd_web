@@ -30,7 +30,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_truepositives
       ),
-      borderColor: PINK,
+      borderColor: trainingResult.get_testData_result.get_truepositives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
     };
@@ -39,7 +41,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_truenegatives
       ),
-      borderColor: BLUE,
+      borderColor: trainingResult.get_testData_result.get_truenegatives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
     };
@@ -48,7 +52,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_falsepositives
       ),
-      borderColor: PINK,
+      borderColor: trainingResult.get_testData_result.get_falsepositives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
       pointStyle: "rectRot",
@@ -58,7 +64,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_falsenegatives
       ),
-      borderColor: BLUE,
+      borderColor: trainingResult.get_testData_result.get_falsenegatives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       pointStyle: "rectRot",
       borderWidth: 1,
       pointRadius: 5,
@@ -70,7 +78,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_truepositives
       ),
-      borderColor: PINK,
+      borderColor: trainingResult.get_trainData_result.get_truepositives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
     };
@@ -79,7 +89,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_truenegatives
       ),
-      borderColor: BLUE,
+      borderColor: trainingResult.get_trainData_result.get_truenegatives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
     };
@@ -88,7 +100,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_falsepositives
       ),
-      borderColor: PINK,
+      borderColor: trainingResult.get_trainData_result.get_falsepositives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       borderWidth: 1,
       pointRadius: 5,
       pointStyle: "rectRot",
@@ -98,7 +112,9 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_falsenegatives
       ),
-      borderColor: BLUE,
+      borderColor: trainingResult.get_trainData_result.get_falsenegatives.map(
+        (o) => (o.label === 1 ? PINK : BLUE)
+      ),
       pointStyle: "rectRot",
       borderWidth: 1,
       pointRadius: 5,
