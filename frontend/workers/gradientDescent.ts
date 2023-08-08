@@ -1,13 +1,20 @@
-import { TrainingResult } from "nanograd_web";
+import { TrainingResult, UpdateResult } from "nanograd_web";
 import { NNRequest, NNResponse, ResponseType } from "./types";
 import { loadData } from "@/data";
 import { DatasetName } from "@/data/types";
+import { IUpdateResult } from "@/network/types";
+import { NUM_OBSERVATIONS } from "@/constants/network";
 
 let nanograd: typeof import("nanograd_web") | null = null;
 
 onmessage = (msg: MessageEvent<NNRequest>) => {
-  const { learningRate, numberOfEpochs, hiddenLayerDims, datasetName } =
-    msg.data;
+  const {
+    learningRate,
+    numberOfEpochs,
+    hiddenLayerDims,
+    datasetName,
+    trainPercent,
+  } = msg.data;
   console.log("Message received from main script");
   let response: NNResponse = {
     type: ResponseType.Error,
@@ -34,7 +41,9 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
     learningRate,
     numberOfEpochs,
     hiddenLayerDims,
+    trainPercent,
   });
+
   // if trainingResult is null, return error
   if (!trainingResult) {
     const response: NNResponse = {
@@ -51,6 +60,8 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
       get_loss: trainingResult.get_loss,
       get_network_dimensions: trainingResult.get_network_dimensions,
       get_num_epochs: trainingResult.get_num_epochs,
+      get_classification_error: trainingResult.get_classification_error,
+      get_predictions: trainingResult.get_predictions,
     },
     type: ResponseType.Done,
     timeToTrain,
@@ -66,6 +77,7 @@ function handleRunSample(params: {
   learningRate: number;
   numberOfEpochs: number;
   hiddenLayerDims: Uint32Array;
+  trainPercent: number;
 }): RunResult {
   if (!nanograd) {
     console.log("Nanograd not loaded in worker returning. Retry recommended.");
@@ -73,20 +85,27 @@ function handleRunSample(params: {
       timeToTrain: 0,
     };
   }
-  const { learningRate, numberOfEpochs, hiddenLayerDims, datasetName } = params;
-  console.log(params);
+  const {
+    learningRate,
+    numberOfEpochs,
+    hiddenLayerDims,
+    datasetName,
+    trainPercent,
+  } = params;
   // start timer
   const start = performance.now();
-  const dataString = loadDataString(datasetName);
+  const { dataString, dataLength } = loadDataString(datasetName);
   if (dataString === "") {
-    console.warn("Unable to load data string.");
     return { timeToTrain: 0 };
   }
+  const trainSize = Math.floor(dataLength * trainPercent);
+  console.log("Train size: " + trainSize);
   const res = nanograd.run_gradient_sample(
     dataString,
     learningRate,
     numberOfEpochs,
     hiddenLayerDims,
+    trainSize,
     handleUpdate
   );
   // end timer
@@ -95,18 +114,28 @@ function handleRunSample(params: {
   return { trainingResult: res, timeToTrain };
 }
 
-function handleUpdate(val: number) {
+function handleUpdate(res: string) {
+  const dataFromUpdate = JSON.parse(res);
+
+  const updateRes: IUpdateResult = {
+    get_loss: dataFromUpdate.loss,
+    get_epoch: dataFromUpdate.epoch,
+  };
   const response: NNResponse = {
-    dataFromUpdate: val,
+    dataFromUpdate: updateRes,
     type: ResponseType.Update,
   };
   postMessage(response);
 }
 
-function loadDataString(name: DatasetName) {
-  if (!nanograd) return "";
+function loadDataString(name: DatasetName): {
+  dataString: string;
+  dataLength: number;
+} {
+  if (!nanograd) return { dataString: "", dataLength: 0 };
   const data = loadData(name);
-  return JSON.stringify(data);
+  // TODO: fix hardcoded number of observations
+  return { dataString: JSON.stringify(data), dataLength: data.length };
 }
 function loadNanograd() {
   import("nanograd_web").then((n) => {

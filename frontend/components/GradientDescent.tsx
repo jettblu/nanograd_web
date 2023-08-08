@@ -1,18 +1,24 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import InputNumber from "./InputNumber";
-import { WASMContext } from "@/context/WASM";
 import CardEpoch from "./CardEpoch";
-import ChartLine from "./ChartLine";
+import ChartLine, { IChartDataset } from "./ChartLine";
 import SelectLayers from "./SelectLayers";
-import { ITrainingResult, NNResponse, ResponseType } from "@/workers/types";
+import { NNResponse, ResponseType } from "@/workers/types";
 import {
   DEFAULT_LEARNING_RATE,
   DEFAULT_NUMBER_OF_EPOCHS,
+  MAX_TRAIN_PERCENT,
+  MIN_TRAIN_PERCENT,
+  STEP_TRAIN_PERCENT,
 } from "@/constants/network";
-import { DatasetName } from "@/data/types";
+import { DatasetName, IObservation } from "@/data/types";
 import { SelectDataset } from "./SelectDataset";
+import { ITrainingResult } from "@/network/types";
+import Slider from "./Slider";
+import { BLUE, DEFAULT_POINT_COLOR, GREEN, PINK, RED } from "@/constants/style";
+import { loadData } from "@/data";
 
 export interface LearningEpoch {
   epoch: number;
@@ -23,6 +29,7 @@ enum ResultView {
   Epochs = "Epochs",
   Graph = "Graph",
   Stats = "Stats",
+  Predictions = "Predictions",
 }
 interface IChartData {
   labels: number[];
@@ -36,14 +43,16 @@ interface IChartData {
 
 export function GradientDescent() {
   const MAX_RETRIES = 5;
-  const [learningRate, setLearningRate] = useState(0.05);
-  const [numberOfEpochs, setNumberOfEpochs] = useState(100);
-  const ctx = useContext(WASMContext);
+  const [learningRate, setLearningRate] = useState(DEFAULT_LEARNING_RATE);
+  const [numberOfEpochs, setNumberOfEpochs] = useState(
+    DEFAULT_NUMBER_OF_EPOCHS
+  );
   const [runningDescent, setRunningDescent] = useState(false);
   const [resultView, setResultView] = useState<ResultView>(ResultView.Epochs);
   const [trainingResult, setTrainingResult] = useState<ITrainingResult | null>(
     null
   );
+  const [trainPercent, setTrainPercent] = useState(0.8);
   const [hiddenLayerDims, setHiddenLayerDims] = useState<Uint32Array>(
     new Uint32Array([4, 3])
   );
@@ -54,6 +63,16 @@ export function GradientDescent() {
   const nnWorker = useRef<Worker | null>(null);
   const [numRetries, setNumRetries] = useState(0);
   const [currTrainingEpoch, setCurrTrainingEpoch] = useState<number>(0);
+  const [lossDataset, setLossDataset] = useState<IChartDataset | null>(null);
+  const [predDatasets, setPredDatasets] = useState<IChartDataset[]>([]);
+  const [positiveCorrect, setPositiveCorrect] = useState<IObservation[]>([]);
+  const [positiveIncorrect, setPositiveIncorrect] = useState<IObservation[]>(
+    []
+  );
+  const [negativeCorrect, setNegativeCorrect] = useState<IObservation[]>([]);
+  const [negativeIncorrect, setNegativeIncorrect] = useState<IObservation[]>(
+    []
+  );
   const [datasetName, setDatasetName] = useState<DatasetName>(
     DatasetName.Spiral
   );
@@ -82,6 +101,7 @@ export function GradientDescent() {
       return;
     }
     nnWorker.current.postMessage({
+      trainPercent,
       datasetName: datasetName,
       learningRate,
       numberOfEpochs,
@@ -94,8 +114,12 @@ export function GradientDescent() {
     setDatasetName(datasetName);
   }
 
+  function handleSetTrainPercent(val: number) {
+    setTrainPercent(val);
+  }
+
   function handleWorkerMessage(e: MessageEvent<NNResponse>) {
-    console.log("Message from worker: ", e.data);
+    console.log("Message from gradient worker: ", e.data);
     const res = e.data;
     switch (res.type) {
       case ResponseType.Error:
@@ -117,8 +141,6 @@ export function GradientDescent() {
         }
         const newTrainingResult = res.trainingResult;
         const newTimeToTrain = formatTime(res.timeToTrain);
-        console.log("Training result: ", newTrainingResult);
-        console.log("Loss: ", newTrainingResult.get_loss);
         setTimeToTrain(newTimeToTrain);
         setRunningDescent(false);
         setTrainingResult(newTrainingResult);
@@ -136,7 +158,7 @@ export function GradientDescent() {
           console.warn("No data returned from worker.");
           return;
         }
-        setCurrTrainingEpoch(currTrainingEpoch + 1);
+        setCurrTrainingEpoch(res.dataFromUpdate.get_epoch);
         break;
       default:
         console.warn("Unknown response type from worker: ", res.type);
@@ -158,28 +180,122 @@ export function GradientDescent() {
     setCurrTrainingEpoch(0);
     setLearningRate(DEFAULT_LEARNING_RATE);
     setNumberOfEpochs(DEFAULT_NUMBER_OF_EPOCHS);
+    setRunningDescent(false);
+    setPositiveCorrect([]);
+    setPositiveIncorrect([]);
+    setNegativeCorrect([]);
+    setNegativeIncorrect([]);
+    setLossDataset(null);
+    setPredDatasets([]);
   }
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        display: false,
-      },
-      title: {
-        display: false,
-        text: "Loss Chart",
-      },
-      elements: {
-        point: {
-          borderWidth: 0,
-          radius: 1,
-          backgroundColor: "rgba(20,0,0,0)",
-        },
-      },
-    },
-  };
+  useEffect(() => {
+    if (!trainingResult) return;
+    // create new loss data set
+    const newLossDataset: IChartDataset = {
+      label: "Loss",
+      data: trainingResult.get_loss,
+      borderColor: DEFAULT_POINT_COLOR,
+      tension: 0.1,
+    };
+    setLossDataset(newLossDataset);
+    // load data sets for predictions
+    const data = loadData(datasetName);
+    // create a data set for each class
+    const newPredDatasets: IChartDataset[] = [];
+    for (let i = 0; i < data.length; i++) {
+      // classify each point
+      const pred = trainingResult.get_predictions[i];
+      const isCorrect = classify(pred, data[i].label);
+      data[i].isCorrect = isCorrect;
+    }
+
+    // filter with only x/y values
+    const positiveCorrectExamples = data.filter(
+      (d) => d.label === 1 && d.isCorrect
+    );
+    const negativeCorrectExamples = data.filter(
+      (d) => d.label === 0 && d.isCorrect
+    );
+    const positiveIncorrectExamples = data.filter(
+      (d) => d.label === 1 && !d.isCorrect
+    );
+    const negativeIncorrectExamples = data.filter(
+      (d) => d.label === 0 && !d.isCorrect
+    );
+
+    const positiveCorrectDataset: IChartDataset = {
+      label: "Class 1",
+      data: convertToPoints(positiveCorrectExamples),
+      borderColor: PINK,
+      borderWidth: 1,
+      pointRadius: 5,
+      backgroundColor: GREEN,
+    };
+    const negativeCorrectDataset: IChartDataset = {
+      label: "Class 0",
+      data: convertToPoints(negativeCorrectExamples),
+      borderColor: BLUE,
+      pointStyle: "rectRot",
+
+      borderWidth: 1,
+      pointRadius: 5,
+      backgroundColor: GREEN,
+    };
+    const positiveIncorrectDataset: IChartDataset = {
+      label: "Class 1",
+      data: convertToPoints(positiveIncorrectExamples),
+      borderColor: PINK,
+      borderWidth: 1,
+      pointRadius: 5,
+      backgroundColor: RED,
+    };
+    const negativeIncorrectDataset: IChartDataset = {
+      label: "Class 0",
+      data: convertToPoints(negativeIncorrectExamples),
+      borderColor: BLUE,
+      pointStyle: "rectRot",
+
+      borderWidth: 1,
+      pointRadius: 5,
+      backgroundColor: RED,
+    };
+    newPredDatasets.push(positiveCorrectDataset);
+    newPredDatasets.push(negativeCorrectDataset);
+    newPredDatasets.push(positiveIncorrectDataset);
+    newPredDatasets.push(negativeIncorrectDataset);
+    setPredDatasets(newPredDatasets);
+    setPositiveCorrect(positiveCorrectExamples);
+    setNegativeCorrect(negativeCorrectExamples);
+    setPositiveIncorrect(positiveIncorrectExamples);
+    setNegativeIncorrect(negativeIncorrectExamples);
+  }, [trainingResult]);
+
+  /**
+   * Classifies a prediction as correct or incorrect
+   * @param pred The predicted value
+   * @param actual The actual value
+   * @returns true if the prediction is correct, false otherwise
+   */
+  function classify(pred: number, actual: number) {
+    console.log("comparing ", pred, " to ", actual, "...");
+    if (pred > 0.5 && actual === 1) {
+      return true;
+    }
+    if (pred < 0.5 && actual === 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function convertToPoints(observations: IObservation[]) {
+    return observations.map((o) => {
+      return {
+        x: o.features[0],
+        y: o.features[1],
+      };
+    });
+  }
 
   return (
     <div className="flex flex-col lg:flex-row w-full lg:divide-x-2 divide-gray-500/30 mx-2">
@@ -193,17 +309,25 @@ export function GradientDescent() {
         <div className="max-w-sm flex flex-col space-y-4">
           <InputNumber
             label="Learning Rate"
-            defaultValue={0.05}
+            defaultValue={DEFAULT_LEARNING_RATE}
             changeHandler={handleSetLearningRate}
           />
           <InputNumber
             label="Number of Epochs"
-            defaultValue={100}
+            defaultValue={DEFAULT_NUMBER_OF_EPOCHS}
             changeHandler={handleSetNumberOfEpochs}
           />
           <SelectDataset
             handleSelect={handleSelectDataset}
             selected={datasetName}
+          />
+          <Slider
+            max={MAX_TRAIN_PERCENT}
+            min={MIN_TRAIN_PERCENT}
+            step={STEP_TRAIN_PERCENT}
+            label="Train %"
+            defaultValue={0.7}
+            changeHandler={handleSetTrainPercent}
           />
           <SelectLayers changeHandler={handleUpdateLayerDims} />
           <div className="flex flex-row space-x-4">
@@ -251,6 +375,15 @@ export function GradientDescent() {
           >
             Loss
           </div>
+          <div
+            className={`text-gray-500 text-md ${
+              resultView == ResultView.Predictions &&
+              "underline underline-offset-4 underline-purple-500"
+            } hover:cursor-pointer hover:text-purple-500`}
+            onClick={() => setResultView(ResultView.Predictions)}
+          >
+            Predictions
+          </div>
         </div>
         {resultView === ResultView.Epochs && (
           <div className="bg-gray-400/10 rounded-lg ring-1 ring-purple-400/20 my-4 max-w-sm mx-auto w-full max-h-[700px] no-scrollbar overflow-auto">
@@ -285,8 +418,18 @@ export function GradientDescent() {
         {resultView === ResultView.Graph && (
           <div>
             <ChartLine
-              data={trainingResult ? trainingResult.get_loss : []}
+              datasets={lossDataset ? [lossDataset] : []}
               clear={!trainingResult}
+              type="line"
+            />
+          </div>
+        )}
+        {resultView === ResultView.Predictions && (
+          <div>
+            <ChartLine
+              datasets={predDatasets}
+              clear={!trainingResult}
+              type="scatter"
             />
           </div>
         )}
@@ -313,6 +456,20 @@ export function GradientDescent() {
               {/* show comma seperated list of dimensions*/}
               <div className="w-1/2 lg:w-3/4">
                 {trainingResult && epochs[epochs.length - 1].loss.toFixed(4)}
+              </div>
+            </div>
+            <div className="flex flex-row bg-gray-500/20 rounded-md px-2 hover:brightness-110 py-1">
+              <div className="w-1/2 lg:w-1/4 text-gray-500">Correct</div>
+              {/* show comma seperated list of dimensions*/}
+              <div className="w-1/2 lg:w-3/4">
+                {trainingResult &&
+                  positiveCorrect.length + negativeCorrect.length}
+                {trainingResult && "/"}
+                {trainingResult &&
+                  positiveCorrect.length +
+                    negativeCorrect.length +
+                    positiveIncorrect.length +
+                    negativeIncorrect.length}
               </div>
             </div>
           </div>
