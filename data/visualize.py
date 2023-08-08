@@ -21,6 +21,7 @@ for filename in os.listdir('data/saved'):
 
 # iterate through dataArray and plot each data
 for data in dataArray:
+    print("Plotting " + nameArray[dataArray.index(data)] + " data...")
     # plot the data
     # each observation has two features and a label
     # plot the features and color the label
@@ -39,10 +40,11 @@ for data in dataArray:
         ys.append(y)
         labels.append(label)
         colors.append(color)
-        print(observation)
-        print("--------------------")
     plt.scatter(xs, ys, color=colors)
     plt.title(nameArray[dataArray.index(data)])
     # save chart to png file
     plt.savefig(BASEPATH + nameArray[dataArray.index(data)] + '.png')
+
+print("Done!")
+print("Saved charts to " + BASEPATH)
 

@@ -50,7 +50,6 @@ def DataGenerator(numSamples, noise, type):
                 inner_theta = np.linspace(0, 2 * np.pi, numSamples//2)
                 outer_scatter = outer_radius * np.array([np.cos(outer_theta), np.sin(outer_theta)]) + np.random.rand(2, numSamples//2) * 2
                 inner_scatter = inner_radius * np.array([np.cos(inner_theta), np.sin(inner_theta)]) + np.random.rand(2, numSamples//2) * 1
-                print(outer_scatter)
                 # return point objects
                 for i in range(numSamples//2):
                     points.append({"features":[inner_scatter[0][i], inner_scatter[1][i]], "label": 0})
@@ -92,16 +91,13 @@ def classifyData(numSamples, noise, type):
     fileName = BASEPATH+type + ".json"
     with open(fileName, "w") as f:
         json.dump(points, f)
-    # save the observations in json string format in txt files
-    with open(type + ".txt", "w") as f:
-        json.dump(points, f, indent=4)
 
     return points
 
 if __name__ == "__main__":
     for type in ["gaussian", "circle", "spiral", "xor"]:
         print("Generating " + type + " data...")
-        classifyData(100, .5, type)
+        classifyData(200, .5, type)
     print("Done!")
 
 
