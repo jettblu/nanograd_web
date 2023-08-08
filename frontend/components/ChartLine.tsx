@@ -89,16 +89,17 @@ export default function ChartLine(params: {
     }
   }, [datasets]);
   return chartData && showChart ? (
-    <Chart
-      data={chartData}
-      type={type}
-      width={300}
-      height={300}
-      options={chartOptions}
-      className="mx-auto lg:mx-2"
-    />
+    <div className="max-w-lg mx-auto">
+      <Chart
+        data={chartData}
+        type={type}
+        width={200}
+        height={200}
+        options={chartOptions}
+      />
+    </div>
   ) : (
-    <div className="w-96 h-96 bg-gray-500/20 rounded-md flex items-center justify-center mx-auto">
+    <div className="w-full max-w-lg h-96 bg-gray-500/20 rounded-md flex items-center justify-center mx-auto">
       <p className="text-gray-500 text-xl">No data to display</p>
     </div>
   );
