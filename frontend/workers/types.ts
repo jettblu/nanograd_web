@@ -12,7 +12,6 @@ import { ITrainingResult, IUpdateResult } from "@/network/types";
 export type NNResponse = {
   trainingResult?: ITrainingResult;
   dataFromUpdate?: IUpdateResult;
-  timeToTrain?: number;
   type: ResponseType;
   message?: string;
 };
