@@ -8,6 +8,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  LineController,
+  ScatterController,
 } from "chart.js";
 import { useEffect, useRef, useState } from "react";
 
@@ -16,7 +18,8 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-
+  LineController,
+  ScatterController,
   Title,
   Tooltip,
   Legend
