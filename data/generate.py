@@ -97,7 +97,7 @@ def classifyData(numSamples, noise, type):
 if __name__ == "__main__":
     for type in ["gaussian", "circle", "spiral", "xor"]:
         print("Generating " + type + " data...")
-        classifyData(200, .5, type)
+        classifyData(100, .5, type)
     print("Done!")
 
 
