@@ -1,9 +1,8 @@
 import ChartLine, { IChartDataset } from "./ChartLine";
 import { useEffect, useState } from "react";
-import { DEFAULT_POINT_COLOR, PINK, GREEN, BLUE, RED } from "@/constants/style";
+import { PINK, BLUE } from "@/constants/style";
 import { convertToPoints } from "@/network/utils";
 import { ITrainingResult } from "@/network/types";
-import CardStats from "./CardStats";
 
 enum ViewType {
   TEST,
