@@ -1,3 +1,4 @@
+import { DEFAULT_HIDDEN_LAYER_SIZES } from "@/constants/network";
 import {
   CloseCircleOutlined,
   MinusCircleOutlined,
@@ -9,7 +10,9 @@ export default function SelectLayers(params: {
   changeHandler: (val: Uint32Array) => any;
 }) {
   const { changeHandler } = params;
-  const [layers, setLayers] = useState<Uint32Array>(new Uint32Array([2, 3]));
+  const [layers, setLayers] = useState<Uint32Array>(
+    new Uint32Array(DEFAULT_HIDDEN_LAYER_SIZES)
+  );
   function handleAddLayer(newSize: number) {
     // update uint32layers
     const newLayers = new Uint32Array(layers.length + 1);
@@ -56,7 +59,7 @@ export default function SelectLayers(params: {
     changeHandler(layers);
   }, [layers]);
   return (
-    <div className="w-full bg-gray-500/10 transition-colors duration-300 ring-2 ring-gray-700/30 rounded-md">
+    <div className="w-full bg-gray-500/10 transition-colors duration-300 ring-2 ring-gray-700/30 rounded-md max-h-[350px] no-scrollbar overflow-auto">
       <p className="text-sm text-left py-1 px-1 rounded-tr-md rounded-tl-md">
         Hidden Layers
       </p>
