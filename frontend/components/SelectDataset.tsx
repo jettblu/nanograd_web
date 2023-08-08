@@ -7,7 +7,7 @@ export function SelectDataset(params: {
 }) {
   const { handleSelect, selected } = params;
   return (
-    <div className="w-fit">
+    <div className="w-fit flex-col space-y-2">
       <label className="text-sm">Select Data</label>
       <p>{selected == DatasetName.Spiral}</p>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -60,6 +60,9 @@ export function SelectDataset(params: {
           }`}
         />
       </div>
+      <label className="text-sm text-gray-500">
+        Default train/test split is 70/30
+      </label>
     </div>
   );
 }
