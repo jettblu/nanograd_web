@@ -3,7 +3,7 @@ import { NNRequest, NNResponse, ResponseType } from "./types";
 import { loadData } from "@/data";
 import { DatasetName } from "@/data/types";
 import { IUpdateResult } from "@/network/types";
-import { NUM_OBSERVATIONS } from "@/constants/network";
+import { newTrainingResult } from "@/network/utils";
 
 let nanograd: typeof import("nanograd_web") | null = null;
 
@@ -15,11 +15,9 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
     datasetName,
     trainPercent,
   } = msg.data;
-  console.log("Message received from main script");
   let response: NNResponse = {
     type: ResponseType.Error,
     message: "This is the default response. You should not have seen this.",
-    timeToTrain: 0,
   };
   // await nanograd load
   if (nanograd === null) {
@@ -29,14 +27,14 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
   if (!nanograd) {
     console.log("Nanograd not loaded in worker returning. Retry recommended.");
     response = {
-      timeToTrain: 0,
       type: ResponseType.Error,
       message: "Nanograd not loaded in worker returning. Retry recommended.",
     };
     postMessage(response);
     return;
   }
-  const { trainingResult, timeToTrain } = handleRunSample({
+  console.log("Number of epochs: " + numberOfEpochs);
+  const { trainingResult, timeToTrain, trainCount } = handleRunSample({
     datasetName,
     learningRate,
     numberOfEpochs,
@@ -49,28 +47,27 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
     const response: NNResponse = {
       type: ResponseType.Error,
       message: "Training result is null",
-      timeToTrain: 0,
     };
     postMessage(response);
     return;
   }
   console.log("Posting message back to main script");
+  const trainingResultToReturn = newTrainingResult({
+    nanoTrainingResult: trainingResult,
+    datasetName: datasetName,
+    trainCount: trainCount,
+    timeToTrain: timeToTrain,
+  });
   response = {
-    trainingResult: {
-      get_loss: trainingResult.get_loss,
-      get_network_dimensions: trainingResult.get_network_dimensions,
-      get_num_epochs: trainingResult.get_num_epochs,
-      get_classification_error: trainingResult.get_classification_error,
-      get_predictions: trainingResult.get_predictions,
-    },
+    trainingResult: trainingResultToReturn,
     type: ResponseType.Done,
-    timeToTrain,
   };
   postMessage(response);
 };
 type RunResult = {
   trainingResult?: TrainingResult;
   timeToTrain: number;
+  trainCount: number;
 };
 function handleRunSample(params: {
   datasetName: DatasetName;
@@ -83,6 +80,7 @@ function handleRunSample(params: {
     console.log("Nanograd not loaded in worker returning. Retry recommended.");
     return {
       timeToTrain: 0,
+      trainCount: 0,
     };
   }
   const {
@@ -96,7 +94,7 @@ function handleRunSample(params: {
   const start = performance.now();
   const { dataString, dataLength } = loadDataString(datasetName);
   if (dataString === "") {
-    return { timeToTrain: 0 };
+    return { timeToTrain: 0, trainCount: 0 };
   }
   const trainSize = Math.floor(dataLength * trainPercent);
   console.log("Train size: " + trainSize);
@@ -111,7 +109,7 @@ function handleRunSample(params: {
   // end timer
   const end = performance.now();
   const timeToTrain = end - start;
-  return { trainingResult: res, timeToTrain };
+  return { trainingResult: res, timeToTrain, trainCount: trainSize };
 }
 
 function handleUpdate(res: string) {
