@@ -264,6 +264,11 @@ export class TrainingResult {
         return ret;
     }
     /**
+    */
+    increment_num_epochs() {
+        wasm.trainingresult_increment_num_epochs(this.__wbg_ptr);
+    }
+    /**
     * @param {number} loss
     */
     set new_loss(loss) {

@@ -83,7 +83,9 @@ impl TrainingResult {
     pub fn get_num_epochs(&self) -> u8 {
         self.num_epochs
     }
-
+    pub fn increment_num_epochs(&mut self) {
+        self.num_epochs = self.num_epochs + 1;
+    }
     #[wasm_bindgen(setter)]
     pub fn set_new_loss(&mut self, loss: f64) {
         self.loss.push(loss);
@@ -155,7 +157,7 @@ pub fn run_gradient_sample(dataset:String, learning_rate: f64, num_epochs: u8, h
                     .clone()
             )
             .collect();
-
+        let ypred_float = ypred.iter().map(|y| y.data()).collect::<Vec<f64>>();
         // Loss function
         // Here we use the sum of squared errors
         // Read more about it here: https://en.wikipedia.org/wiki/Residual_sum_of_squares
@@ -167,7 +169,8 @@ pub fn run_gradient_sample(dataset:String, learning_rate: f64, num_epochs: u8, h
             .sum();
 
         training_result.loss.push(loss.data());
-        training_result.set_predictions(train_ys.clone());
+        
+        training_result.set_predictions(ypred_float);
         let new_update = UpdateResult::new(loss.data(), i);
         // run callback after converting to json string
         let _ = fn_callback.call1(&JsValue::NULL, &JsValue::from(new_update.to_json()));
@@ -183,6 +186,7 @@ pub fn run_gradient_sample(dataset:String, learning_rate: f64, num_epochs: u8, h
         mlp.parameters()
             .iter()
             .for_each(|p| p.adjust(-learning_rate));
+        training_result.increment_num_epochs();
     }
             // run forward pass on test set
         let test_ypred: Vec<Value> = test_xs

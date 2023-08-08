@@ -27,6 +27,9 @@ export class TrainingResult {
   constructor(loss: Float64Array, network_dimensions: Uint32Array, predictions: Float64Array, classification_error: number);
 /**
 */
+  increment_num_epochs(): void;
+/**
+*/
   classification_error: number;
 /**
 */
@@ -85,6 +88,7 @@ export interface InitOutput {
   readonly trainingresult_get_loss: (a: number, b: number) => void;
   readonly trainingresult_get_network_dimensions: (a: number, b: number) => void;
   readonly trainingresult_get_num_epochs: (a: number) => number;
+  readonly trainingresult_increment_num_epochs: (a: number) => void;
   readonly trainingresult_set_new_loss: (a: number, b: number) => void;
   readonly trainingresult_set_predictions: (a: number, b: number, c: number) => void;
   readonly trainingresult_set_classification_error: (a: number, b: number) => void;

@@ -11,6 +11,7 @@ export function trainingresult_new(a: number, b: number, c: number, d: number, e
 export function trainingresult_get_loss(a: number, b: number): void;
 export function trainingresult_get_network_dimensions(a: number, b: number): void;
 export function trainingresult_get_num_epochs(a: number): number;
+export function trainingresult_increment_num_epochs(a: number): void;
 export function trainingresult_set_new_loss(a: number, b: number): void;
 export function trainingresult_set_predictions(a: number, b: number, c: number): void;
 export function trainingresult_set_classification_error(a: number, b: number): void;
