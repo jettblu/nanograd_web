@@ -42,22 +42,32 @@ const chartOptions = {
   },
 };
 
-export type NumericalData = number[] | Float64Array;
+export type NumericalData =
+  | number[]
+  | Float64Array
+  | { x: number; y: number }[];
 interface IChartData {
   labels: number[];
-  datasets: {
-    label: string;
-    data: NumericalData;
-    borderColor: CanvasGradient | string | undefined;
-    tension: number;
-  }[];
+  datasets: IChartDataset[];
+}
+
+export interface IChartDataset {
+  label: string;
+  data: NumericalData;
+  borderColor: CanvasGradient | string | undefined;
+  backgroundColor?: string[] | string;
+  pointStyle?: string;
+  borderWidth?: number;
+  pointRadius?: number;
+  tension?: number;
 }
 
 export default function ChartLine(params: {
-  data: NumericalData;
+  datasets: IChartDataset[];
+  type: "line" | "scatter";
   clear: boolean;
 }) {
-  const { data, clear } = params;
+  const { datasets, clear, type } = params;
   const chartRef = useRef<ChartJS | null>(null);
   const [chartData, setChartData] = useState<IChartData | null>(null);
   const [showChart, setShowChart] = useState(false);
@@ -70,26 +80,18 @@ export default function ChartLine(params: {
     setShowChart(true);
   }, [clear]);
   useEffect(() => {
-    if (data) {
+    if (datasets && datasets.length >= 1) {
       const newChartData = {
-        labels: Array.from({ length: data.length }, (_, i) => i),
-        datasets: [
-          {
-            label: "Loss",
-            data: data,
-            // purple
-            borderColor: "rgba(103, 8, 123, 1)",
-            tension: 0.1,
-          },
-        ],
+        labels: Array.from({ length: datasets[0].data.length }, (_, i) => i),
+        datasets: datasets,
       };
       setChartData(newChartData);
     }
-  }, [data]);
+  }, [datasets]);
   return chartData && showChart ? (
     <Chart
       data={chartData}
-      type="line"
+      type={type}
       width={300}
       height={300}
       options={chartOptions}
