@@ -1,0 +1,23 @@
+{
+  "name": "nanograd_web",
+  "collaborators": [
+    "Jett Hays <jettblu.fabrications@gmail.com>"
+  ],
+  "description": "Nanograd on the web.",
+  "version": "0.2.6",
+  "license": "MIT/Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jettblu/nanograd"
+  },
+  "files": [
+    "nanograd_web_bg.wasm",
+    "nanograd_web.js",
+    "nanograd_web.d.ts"
+  ],
+  "module": "nanograd_web.js",
+  "types": "nanograd_web.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
