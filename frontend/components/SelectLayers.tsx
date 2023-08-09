@@ -76,7 +76,7 @@ export default function SelectLayers(params: {
         ))}
       </div>
       <div
-        className="bg-gray-500/30 rounded-br-md rounded-bl-md px-2 py-3 hover:cursor-pointer mt-4 hover:bg-purple-800/20 transition-colors duration-300"
+        className="bg-gray-500/10 rounded-br-md rounded-bl-md px-2 py-3 hover:cursor-pointer mt-4 hover:bg-purple-800/20 transition-colors duration-300"
         onClick={() => handleAddLayer(3)}
       >
         Add Layer
@@ -106,7 +106,7 @@ function Layer(params: {
     <div className="flex flex-row px-1 hover:brightness-120 transition-colors duration-100 group">
       <div className="flex flex-col pt-2 space-y-3">
         <div>
-          <p className="text-gray-500 text-sm group-hover:text-gray-300 transition-colors duration-100">
+          <p className="text-gray-500 text-sm transition-colors duration-100">
             Layer {index}
           </p>
         </div>
@@ -120,7 +120,7 @@ function Layer(params: {
             className="text-gray-400/20 group-hover:text-gray-400/70 hover:cursor-pointer transition-colors duration-100"
             onClick={() => handleDecrementSize(index)}
           />
-          <span className="text-gray-500 group-hover:text-gray-300 text-sm transition-colors duration-100">
+          <span className="text-gray-500 text-sm transition-colors duration-100">
             {size}
           </span>
           <PlusCircleOutlined

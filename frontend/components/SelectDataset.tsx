@@ -17,9 +17,9 @@ export function SelectDataset(params: {
           width={70}
           height={70}
           onClick={() => handleSelect(DatasetName.Spiral)}
-          className={`rounded-md hover:cursor-pointer bg-gray-700/20 p-2 transition-colors duration-300 hover:brightness-105 ${
+          className={`rounded-md hover:cursor-pointer bg-gray-500/10 p-2 transition-colors duration-300 hover:brightness-105 ${
             selected == DatasetName.Spiral
-              ? "ring-1 ring-purple-500/40"
+              ? "ring-1 ring-purple-500/50"
               : "ring-1 ring-gray-500/50"
           }`}
         />
@@ -29,9 +29,9 @@ export function SelectDataset(params: {
           width={70}
           height={70}
           onClick={() => handleSelect(DatasetName.Circle)}
-          className={`rounded-md hover:cursor-pointer bg-gray-700/20 p-2 transition-colors duration-300 hover:brightness-105 ${
+          className={`rounded-md hover:cursor-pointer bg-gray-500/10 p-2 transition-colors duration-300 hover:brightness-105 ${
             selected == DatasetName.Circle
-              ? "ring-1 ring-purple-500/40"
+              ? "ring-1 ring-purple-500/50"
               : "ring-1 ring-gray-500/50"
           }`}
         />
@@ -41,9 +41,9 @@ export function SelectDataset(params: {
           width={70}
           height={70}
           onClick={() => handleSelect(DatasetName.Xor)}
-          className={`rounded-md hover:cursor-pointer bg-gray-700/20 p-2 transition-colors duration-300 hover:brightness-105 ${
+          className={`rounded-md hover:cursor-pointer bg-gray-500/10 p-2 transition-colors duration-300 hover:brightness-105 ${
             selected == DatasetName.Xor
-              ? "ring-1 ring-purple-500/40"
+              ? "ring-1 ring-purple-500/50"
               : "ring-1 ring-gray-500/50"
           }`}
         />
@@ -53,9 +53,9 @@ export function SelectDataset(params: {
           width={70}
           height={70}
           onClick={() => handleSelect(DatasetName.Gaussian)}
-          className={`rounded-md hover:cursor-pointer bg-gray-700/20 p-2 transition-colors duration-300 hover:brightness-105 ${
+          className={`rounded-md hover:cursor-pointer bg-gray-500/10 p-2 transition-colors duration-300 hover:brightness-105 ${
             selected == DatasetName.Gaussian
-              ? "ring-1 ring-purple-500/40"
+              ? "ring-1 ring-purple-500/50"
               : "ring-1 ring-gray-500/50"
           }`}
         />

@@ -56,7 +56,7 @@ export default function InputNumber(props: {
       <label className="text-sm">{label}</label>
       <div className="flex flex-row w-full rounded-md">
         <input
-          className="rounded-md text-center w-3/4 py-1 bg-gray-500/20 text-2xl focus:outline-none"
+          className="rounded-md text-center w-3/4 py-1 bg-gray-400/20 dark:bg-gray-600/20 text-2xl focus:outline-none"
           type="text"
           value={num}
           placeholder={defaultValue.toString()}

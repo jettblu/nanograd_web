@@ -181,136 +181,130 @@ export function GradientDescent() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full lg:divide-x-2 divide-gray-500/30 mx-2">
-      <div className="lg:w-1/2 mx-auto mb-4 lg:mb-0 sm:max-w-lg md:max-w-lg lg:max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4">Nanograd</h1>
-        <p className="text-md text-gray-500 mb-4">
-          Nanograd is a tiny deep learning library, implemented in Rust. Use the
-          controls below to train a neural network with gradient descent.
-        </p>
-        {/* controls */}
-        <div className="max-w-sm flex flex-col space-y-4">
-          <InputNumber
-            label="Learning Rate"
-            defaultValue={DEFAULT_LEARNING_RATE}
-            changeHandler={handleSetLearningRate}
-            max={MAX_LEARNING_RATE}
-            min={MIN_LEARNING_RATE}
-          />
-          <InputNumber
-            label="Number of Epochs"
-            defaultValue={DEFAULT_NUMBER_OF_EPOCHS}
-            changeHandler={handleSetNumberOfEpochs}
-            max={MAX_EPOCHS}
-            min={MIN_EPOCHS}
-          />
-          <SelectDataset
-            handleSelect={handleSelectDataset}
-            selected={datasetName}
-          />
-          <Slider
-            max={MAX_TRAIN_PERCENT}
-            min={MIN_TRAIN_PERCENT}
-            step={STEP_TRAIN_PERCENT}
-            label="Train %"
-            defaultValue={0.7}
-            changeHandler={handleSetTrainPercent}
-          />
-          <SelectLayers changeHandler={handleUpdateLayerDims} />
-          <div className="flex flex-row space-x-4">
-            <div
-              className="bg-purple-400/20 text-xl ring-1 ring-purple-400/80 text-white text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
-              onClick={() => runGradientDescent()}
-            >
-              Run
-            </div>
-            <div
-              className="bg-purple-400/20 text-xl ring-1 ring-purple-400/80 text-white text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
-              onClick={handleReset}
-            >
-              Reset
+    <div className="">
+      <div className="flex flex-col lg:flex-row w-full lg:divide-x-2 divide-gray-500/30">
+        <div className="lg:w-1/2 mx-auto mb-4 lg:mb-0 sm:max-w-lg md:max-w-lg lg:max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4">Nanograd</h1>
+          <p className="text-md text-gray-500 mb-4">
+            Nanograd is a tiny deep learning library, implemented in Rust. Use
+            the controls below to train a neural network with gradient descent.
+          </p>
+          {/* controls */}
+          <div className="max-w-sm flex flex-col space-y-4">
+            <InputNumber
+              label="Learning Rate"
+              defaultValue={DEFAULT_LEARNING_RATE}
+              changeHandler={handleSetLearningRate}
+              max={MAX_LEARNING_RATE}
+              min={MIN_LEARNING_RATE}
+            />
+            <InputNumber
+              label="Number of Epochs"
+              defaultValue={DEFAULT_NUMBER_OF_EPOCHS}
+              changeHandler={handleSetNumberOfEpochs}
+              max={MAX_EPOCHS}
+              min={MIN_EPOCHS}
+            />
+            <SelectDataset
+              handleSelect={handleSelectDataset}
+              selected={datasetName}
+            />
+            <SelectLayers changeHandler={handleUpdateLayerDims} />
+            <div className="flex flex-row space-x-4">
+              <div
+                className="bg-purple-700/20 text-xl ring-1 ring-purple-400/80 text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
+                onClick={() => runGradientDescent()}
+              >
+                Run
+              </div>
+              <div
+                className="bg-purple-700/20 text-xl ring-1 ring-purple-400/80 text-center py-1 px-2 hover:cursor-pointer rounded-md hover:brightness-110"
+                onClick={handleReset}
+              >
+                Reset
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col space-y-2 lg:w-1/2 mx-auto w-full mt-4">
-        <div className="flex flex-row space-x-4 max-w-lg mx-auto">
-          <div
-            className={`text-gray-500 text-md ${
-              resultView == ResultView.Epochs &&
-              "underline underline-offset-4 underline-purple-500"
-            } hover:cursor-pointer hover:text-purple-500`}
-            onClick={() => setResultView(ResultView.Epochs)}
-          >
-            Epochs
-          </div>
-          <div
-            className={`text-gray-500 text-md ${
-              resultView == ResultView.Stats &&
-              "underline underline-offset-4 underline-purple-500"
-            } hover:cursor-pointer hover:text-purple-500`}
-            onClick={() => setResultView(ResultView.Stats)}
-          >
-            Stats
-          </div>
-          <div
-            className={`text-gray-500 text-md ${
-              resultView == ResultView.Loss &&
-              "underline underline-offset-4 underline-purple-500"
-            } hover:cursor-pointer hover:text-purple-500`}
-            onClick={() => setResultView(ResultView.Loss)}
-          >
-            Loss
-          </div>
-          <div
-            className={`text-gray-500 text-md ${
-              resultView == ResultView.Predictions &&
-              "underline underline-offset-4 underline-purple-500"
-            } hover:cursor-pointer hover:text-purple-500`}
-            onClick={() => setResultView(ResultView.Predictions)}
-          >
-            Predictions
-          </div>
-        </div>
-        {resultView === ResultView.Epochs && (
-          <div className="bg-gray-400/10 rounded-lg ring-1 ring-purple-400/20 my-4 max-w-lg mx-auto w-full max-h-[700px] no-scrollbar overflow-auto">
-            <div className="text-lg text-left font-semibold font-bold mb-3 bg-purple-500/10 px-2 py-2 ring ring-1 rounded-tr-lg rounded-tl-lg ring-purple-500/20 ">
+        <div className="flex flex-col space-y-2 lg:w-1/2 mx-auto w-full mt-4">
+          <div className="flex flex-row space-x-4 max-w-lg mx-auto">
+            <div
+              className={`text-gray-500 text-md ${
+                resultView == ResultView.Epochs &&
+                "underline underline-offset-4 underline-purple-500"
+              } hover:cursor-pointer hover:text-purple-500`}
+              onClick={() => setResultView(ResultView.Epochs)}
+            >
               Epochs
             </div>
-            <div className="px-2 py-2">
-              {runningDescent && (
-                <div className="text-md text-center text-gray-500 my-4">
-                  <p>Loading...</p>
-                  <p>
-                    Trained {currTrainingEpoch}/{numberOfEpochs} epochs
-                  </p>
-                </div>
-              )}
-              {!runningDescent && (
-                <div className="flex flex-col space-y-2">
-                  {!trainingResult && (
-                    <div className="text-md text-center text-gray-500 my-4">
-                      No epochs yet
-                    </div>
-                  )}
-                  {trainingResult &&
-                    epochs.map((epoch) => (
-                      <CardEpoch key={epoch.epoch} epoch={epoch} />
-                    ))}
-                </div>
-              )}
+            <div
+              className={`text-gray-500 text-md ${
+                resultView == ResultView.Stats &&
+                "underline underline-offset-4 underline-purple-500"
+              } hover:cursor-pointer hover:text-purple-500`}
+              onClick={() => setResultView(ResultView.Stats)}
+            >
+              Stats
+            </div>
+            <div
+              className={`text-gray-500 text-md ${
+                resultView == ResultView.Loss &&
+                "underline underline-offset-4 underline-purple-500"
+              } hover:cursor-pointer hover:text-purple-500`}
+              onClick={() => setResultView(ResultView.Loss)}
+            >
+              Loss
+            </div>
+            <div
+              className={`text-gray-500 text-md ${
+                resultView == ResultView.Predictions &&
+                "underline underline-offset-4 underline-purple-500"
+              } hover:cursor-pointer hover:text-purple-500`}
+              onClick={() => setResultView(ResultView.Predictions)}
+            >
+              Predictions
             </div>
           </div>
-        )}
-        {resultView === ResultView.Loss && (
-          <CardLoss trainingResult={trainingResult} />
-        )}
-        {resultView === ResultView.Predictions && (
-          <CardPredictions trainingResult={trainingResult} />
-        )}
-        {resultView === ResultView.Stats && (
-          <CardStats trainingResult={trainingResult} />
-        )}
+          {resultView === ResultView.Epochs && (
+            <div className="bg-gray-400/10 rounded-lg ring-1 ring-purple-400/20 my-4 max-w-lg mx-auto w-full max-h-[700px] no-scrollbar overflow-auto">
+              <div className="text-lg text-left font-semibold font-bold mb-3 bg-purple-500/10 px-2 py-2 ring ring-1 rounded-tr-lg rounded-tl-lg ring-purple-500/20 ">
+                Epochs
+              </div>
+              <div className="px-2 py-2">
+                {runningDescent && (
+                  <div className="text-md text-center text-gray-500 my-4">
+                    <p>Loading...</p>
+                    <p>
+                      Trained {currTrainingEpoch}/{numberOfEpochs} epochs
+                    </p>
+                  </div>
+                )}
+                {!runningDescent && (
+                  <div className="flex flex-col space-y-2">
+                    {!trainingResult && (
+                      <div className="text-md text-center text-gray-500 my-4">
+                        No epochs yet
+                      </div>
+                    )}
+                    {trainingResult &&
+                      epochs.map((epoch) => (
+                        <CardEpoch key={epoch.epoch} epoch={epoch} />
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {resultView === ResultView.Loss && (
+            <CardLoss trainingResult={trainingResult} />
+          )}
+          {resultView === ResultView.Predictions && (
+            <CardPredictions trainingResult={trainingResult} />
+          )}
+          {resultView === ResultView.Stats && (
+            <CardStats trainingResult={trainingResult} />
+          )}
+        </div>
       </div>
     </div>
   );
