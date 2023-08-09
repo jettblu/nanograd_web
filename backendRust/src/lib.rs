@@ -224,11 +224,14 @@ pub fn run_gradient_sample(dataset:String, learning_rate: f64, num_epochs: u8, h
                 *p = 0.0;
             }
         });
-        let test_error = test_predictions
+        // compute classification accuracy
+        let mut test_error = test_predictions
             .iter()
             .zip(test_ys_copy.iter())
             .filter(|(p, y)| p != y)
             .count() as f64 / test_predictions.len() as f64;
+        // flip to error
+        test_error = 1.0-test_error;
     // append new predictions to old predictions
     let mut all_preds = training_result.predictions.clone();
     // add new predictions to old predictions
