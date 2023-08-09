@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-export default function () {
+export default function Navbar() {
   return (
     <div className="z-10 w-full items-center justify-between font-mono text-sm lg:flex p-8 mb-6">
       <Link href="/" className="hover:cursor-pointer">
