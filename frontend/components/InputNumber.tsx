@@ -14,7 +14,7 @@ export default function InputNumber(props: {
   const [num, setNum] = useState("");
 
   function handleChange(newVal: string) {
-    const newNum = parseInt(newVal);
+    const newNum = parseFloat(newVal);
     if (newVal == "") {
       setNum("");
       changeHandler(defaultValue);
@@ -32,25 +32,24 @@ export default function InputNumber(props: {
     if (min && newNum < min) {
       console.warn(`Number must be greater than ${min}`);
       setErrorMsg(`Number must be greater than ${min}`);
-    }
-    if (max && newNum > max) {
+    } else if (max && newNum > max) {
       console.warn(`Number must be less than ${max}`);
       setErrorMsg(`Number must be less than ${max}`);
-      return;
+    } else {
+      setErrorMsg(null);
     }
     setNum(newVal);
     changeHandler(newNum);
-    setErrorMsg(null);
   }
-  // only show error message for two seconds
-  useEffect(() => {
-    if (errorMsg) {
-      const timeout = setTimeout(() => {
-        setErrorMsg(null);
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [errorMsg]);
+  // uncomment to only show error message for two seconds
+  // useEffect(() => {
+  //   if (errorMsg) {
+  //     const timeout = setTimeout(() => {
+  //       setErrorMsg(null);
+  //     }, 2000);
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [errorMsg]);
 
   return (
     <div className="flex flex-col space-y-2">
