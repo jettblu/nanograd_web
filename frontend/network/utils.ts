@@ -1,18 +1,19 @@
 import { loadData } from "@/data";
 import { DatasetName, IObservation } from "@/data/types";
-import { ITrainingResult } from "./types";
+import { IConfusionMatrix, ITrainingResult } from "./types";
 import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
 
 /**
  * Classifies a prediction
- * @param pred The predicted value.. typically a float between 0 and 1
- * @returns true if the prediction is positive, false otherwise
+ * @param pred The predicted value.. typically a float between -1 and 1
+ * @param actual The actual value.. typically 1 or -1
+ * @returns true if the prediction is correct
  */
-function classify(pred: number) {
-  if (pred > 0) {
+function classify(pred: number, actual: number) {
+  if (pred > 0 && actual > 0) {
     return true;
   }
-  if (pred < 0) {
+  if (pred < 0 && actual < 0) {
     return true;
   }
   return false;
@@ -43,18 +44,18 @@ export function newTrainingResult(params: {
   for (let i = 0; i < trainPreds.length; i++) {
     const pred = trainPreds[i];
     const actual = data[i].label;
-    const isPredPositive = classify(pred);
-    console.log(pred, actual, isPredPositive);
-    if (isPredPositive && actual === 1) {
+    const isPredCorrect = classify(pred, actual);
+    console.log(pred, actual, isPredCorrect);
+    if (isPredCorrect && actual === 1) {
       train_truepositives.push(data[i]);
     }
-    if (isPredPositive && actual === -1) {
+    if (isPredCorrect && actual === -1) {
       train_falsepositives.push(data[i]);
     }
-    if (!isPredPositive && actual === -1) {
+    if (!isPredCorrect && actual === -1) {
       train_truenegatives.push(data[i]);
     }
-    if (!isPredPositive && actual === 1) {
+    if (!isPredCorrect && actual === 1) {
       train_falsenegatives.push(data[i]);
     }
   }
@@ -66,17 +67,17 @@ export function newTrainingResult(params: {
   for (let i = 0; i < testPreds.length; i++) {
     const pred = testPreds[i];
     const actual = data[i + trainCount].label;
-    const isPredPositive = classify(pred);
-    if (isPredPositive && actual === 1) {
+    const isPredCorrect = classify(pred, actual);
+    if (isPredCorrect && actual === 1) {
       test_truepositives.push(data[i + trainCount]);
     }
-    if (isPredPositive && actual === -1) {
+    if (isPredCorrect && actual === -1) {
       test_falsepositives.push(data[i + trainCount]);
     }
-    if (!isPredPositive && actual === -1) {
+    if (!isPredCorrect && actual === -1) {
       test_truenegatives.push(data[i + trainCount]);
     }
-    if (!isPredPositive && actual === 1) {
+    if (!isPredCorrect && actual === 1) {
       test_falsenegatives.push(data[i + trainCount]);
     }
   }
@@ -126,4 +127,49 @@ export function formatTime(val?: number) {
   const numSecs = val / 1000;
   const formattedTime = numSecs.toFixed(2).toString() + "s";
   return formattedTime;
+}
+
+export function isPositiveClass(observation: IObservation) {
+  return observation.label === 1;
+}
+
+export function getConfusionMatrix(
+  traingResult: ITrainingResult
+): IConfusionMatrix {
+  return {
+    truePositives: {
+      count: traingResult.get_testData_result.get_truepositives.length,
+      percentage:
+        traingResult.get_testData_result.get_truepositives.length /
+        traingResult.get_testData_result.get_observationCount,
+    },
+    trueNegatives: {
+      count: traingResult.get_testData_result.get_truenegatives.length,
+      percentage:
+        traingResult.get_testData_result.get_truenegatives.length /
+        traingResult.get_testData_result.get_observationCount,
+    },
+    falsePositives: {
+      count: traingResult.get_testData_result.get_falsepositives.length,
+      percentage:
+        traingResult.get_testData_result.get_falsepositives.length /
+        traingResult.get_testData_result.get_observationCount,
+    },
+    falseNegatives: {
+      count: traingResult.get_testData_result.get_falsenegatives.length,
+      percentage:
+        traingResult.get_testData_result.get_falsenegatives.length /
+        traingResult.get_testData_result.get_observationCount,
+    },
+  };
+}
+
+/**
+ * Trim a float to a specified number of decimals
+ * @param val The float to trim
+ * @param numDecimals The number of decimals to trim to
+ * @returns number with the specified number of decimals
+ */
+export function trimFloat(val: number, numDecimals: number) {
+  return parseFloat(val.toFixed(2));
 }
