@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import InputNumber from "./InputNumber";
 import CardEpoch from "./CardEpoch";
-import ChartLine, { IChartDataset } from "./ChartLine";
 import SelectLayers from "./SelectLayers";
 import { NNResponse, ResponseType } from "@/workers/types";
 import {
@@ -47,7 +46,9 @@ interface IChartData {
     tension: number;
   }[];
 }
-
+// fix class labels for chart
+// fix stats update
+// compare computd error in rust to js
 export function GradientDescent() {
   const MAX_RETRIES = 5;
   const [learningRate, setLearningRate] = useState(DEFAULT_LEARNING_RATE);
@@ -68,8 +69,6 @@ export function GradientDescent() {
   const nnWorker = useRef<Worker | null>(null);
   const [numRetries, setNumRetries] = useState(0);
   const [currTrainingEpoch, setCurrTrainingEpoch] = useState<number>(0);
-  const [lossDataset, setLossDataset] = useState<IChartDataset | null>(null);
-  const [predDatasets, setPredDatasets] = useState<IChartDataset[]>([]);
   const [datasetName, setDatasetName] = useState<DatasetName>(
     DatasetName.Spiral
   );
@@ -178,8 +177,6 @@ export function GradientDescent() {
     setLearningRate(DEFAULT_LEARNING_RATE);
     setNumberOfEpochs(DEFAULT_NUMBER_OF_EPOCHS);
     setRunningDescent(false);
-    setLossDataset(null);
-    setPredDatasets([]);
     initializeWorker();
   }
 
