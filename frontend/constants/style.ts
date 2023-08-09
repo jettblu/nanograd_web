@@ -3,3 +3,4 @@ export const PINK = "#f52ce4";
 export const BLUE = "#2c7df5";
 export const GREEN = "#2cf5b5";
 export const RED = "#f52c2c";
+export const MAX_DECIMALS_TO_SHOW = 3;
