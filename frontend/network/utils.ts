@@ -45,7 +45,6 @@ export function newTrainingResult(params: {
     const pred = trainPreds[i];
     const actual = data[i].label;
     const isPredCorrect = classify(pred, actual);
-    console.log(pred, actual, isPredCorrect);
     if (isPredCorrect && actual === 1) {
       train_truepositives.push(data[i]);
     }
