@@ -19,14 +19,29 @@ export default function About() {
         <p>
           Nanograd is simple. Less code. Fewer operations. Built with Rust 🦀.
         </p>
-        <a
-          href="https://github.com/jettblu/nanograd_web"
-          className="text-purple-500 hover:font-semibold hover:curosr-pointer"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View on GitHub
-        </a>
+        <p>
+          {" "}
+          <a
+            href="https://github.com/jettblu/nanograd_web"
+            className="text-purple-300 dark:text-purple-900 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Playground on GitHub
+          </a>
+        </p>
+
+        <p>
+          <a
+            href="https://github.com/jettblu/nanograd"
+            className="text-purple-300 dark:text-purple-900 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Nanograd on GitHub
+          </a>
+        </p>
+
         <h3>Features</h3>
         <p>
           Nanograd represents networks as a dynamic DAG. Optimization is handled
