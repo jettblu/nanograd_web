@@ -32,7 +32,6 @@ export default function InputNumber(props: {
     if (min && newNum < min) {
       console.warn(`Number must be greater than ${min}`);
       setErrorMsg(`Number must be greater than ${min}`);
-      return;
     }
     if (max && newNum > max) {
       console.warn(`Number must be less than ${max}`);
