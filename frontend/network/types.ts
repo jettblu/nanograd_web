@@ -32,3 +32,18 @@ export type IUpdateResult = {
   readonly get_loss: number;
   readonly get_epoch: number;
 };
+
+/**
+ * Confusion matrix. Each value represents the number of observations that fall into that category.
+ */
+export type IConfusionMatrix = {
+  readonly truePositives: ConfusionMatrixValue;
+  readonly trueNegatives: ConfusionMatrixValue;
+  readonly falsePositives: ConfusionMatrixValue;
+  readonly falseNegatives: ConfusionMatrixValue;
+};
+
+export type ConfusionMatrixValue = {
+  readonly count: number;
+  readonly percentage: number;
+};
