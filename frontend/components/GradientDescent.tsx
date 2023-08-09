@@ -133,7 +133,7 @@ export function GradientDescent() {
           setNumRetries(numRetries + 1);
           // pause for .5 second
           setTimeout(() => {
-            console.log("Retrying...");
+            // pass for now
           }, 500);
           runGradientDescent();
         } else {

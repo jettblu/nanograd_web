@@ -33,7 +33,6 @@ onmessage = (msg: MessageEvent<NNRequest>) => {
     postMessage(response);
     return;
   }
-  console.log("Number of epochs: " + numberOfEpochs);
   const { trainingResult, timeToTrain, trainCount } = handleRunSample({
     datasetName,
     learningRate,
@@ -97,7 +96,6 @@ function handleRunSample(params: {
     return { timeToTrain: 0, trainCount: 0 };
   }
   const trainSize = Math.floor(dataLength * trainPercent);
-  console.log("Train size: " + trainSize);
   const res = nanograd.run_gradient_sample(
     dataString,
     learningRate,
