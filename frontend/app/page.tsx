@@ -1,7 +1,6 @@
 import React from "react";
 
 import Image from "next/image";
-import { WASMContextProvider } from "@/context/WASM";
 import { GradientDescent } from "@/components/GradientDescent";
 
 export default function Home() {
@@ -28,11 +27,9 @@ export default function Home() {
           </a>
         </div>
       </div>
-      <WASMContextProvider>
-        <div className="mx-auto max-w-7xl w-full flex flex-row mb-auto">
-          <GradientDescent />
-        </div>
-      </WASMContextProvider>
+      <div className="mx-auto max-w-7xl w-full flex flex-row mb-auto">
+        <GradientDescent />
+      </div>
 
       <div className="mx-auto grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
