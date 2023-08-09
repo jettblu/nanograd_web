@@ -12,6 +12,7 @@ import {
   ScatterController,
 } from "chart.js";
 import { useEffect, useRef, useState } from "react";
+import { IChartData, IChartDataset } from "@/chart/types";
 
 ChartJS.register(
   CategoryScale,
@@ -45,26 +46,6 @@ const chartOptions = {
     },
   },
 };
-
-export type NumericalData =
-  | number[]
-  | Float64Array
-  | { x: number; y: number }[];
-interface IChartData {
-  labels: number[];
-  datasets: IChartDataset[];
-}
-
-export interface IChartDataset {
-  label: string;
-  data: NumericalData;
-  borderColor: CanvasGradient | string | undefined | string[];
-  backgroundColor?: string[] | string;
-  pointStyle?: string;
-  borderWidth?: number;
-  pointRadius?: number;
-  tension?: number;
-}
 
 export default function ChartLine(params: {
   datasets: IChartDataset[];
