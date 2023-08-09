@@ -9,10 +9,11 @@
 // add overview page
 // add learning pages
 
-import ChartLine, { IChartDataset } from "./ChartLine";
+import ChartLine from "./ChartLine";
 import { useEffect, useState } from "react";
 import { DEFAULT_POINT_COLOR } from "@/constants/style";
 import { ITrainingResult } from "@/network/types";
+import { IChartDataset } from "@/chart/types";
 
 export default function CardLoss(props: {
   trainingResult: ITrainingResult | null;
@@ -32,15 +33,17 @@ export default function CardLoss(props: {
   }, [trainingResult]);
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-lg mx-auto w-full">
       <ChartLine datasets={lossDatasets} clear={!trainingResult} type="line" />
-      <div>
-        <p className="text-sm font-semibold mt-2">About</p>
-        <p className="text-sm">
-          This chart shows model loss over each epoch. Loss is calculated using
-          the sum of squared errors.
-        </p>
-      </div>
+      {trainingResult && (
+        <div>
+          <p className="text-sm font-semibold mt-2">About</p>
+          <p className="text-sm">
+            This chart shows model loss over each epoch. Loss is calculated
+            using the sum of squared errors.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
