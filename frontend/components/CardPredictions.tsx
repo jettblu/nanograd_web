@@ -1,8 +1,9 @@
-import ChartLine, { IChartDataset } from "./ChartLine";
+import ChartLine from "./ChartLine";
 import { useEffect, useState } from "react";
-import { PINK, BLUE } from "@/constants/style";
 import { convertToPoints } from "@/network/utils";
 import { ITrainingResult } from "@/network/types";
+import { getChartColor } from "@/chart/utils";
+import { IChartDataset } from "@/chart/types";
 
 enum ViewType {
   TEST,
@@ -16,11 +17,10 @@ export default function CardPredictions(props: {
   const { trainingResult } = props;
   const [testDatasets, setTestDatasets] = useState<IChartDataset[]>([]);
   const [traindatasets, setTrainDatasets] = useState<IChartDataset[]>([]);
-  const [viewType, setViewType] = useState<ViewType>(ViewType.TEST);
+  const [viewType, setViewType] = useState<ViewType>(ViewType.All);
   function handleSwitchView(newViewType: ViewType) {
     setViewType(newViewType);
   }
-  console.log("training result", trainingResult);
   useEffect(() => {
     if (!trainingResult) return;
 
@@ -30,8 +30,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_truepositives
       ),
-      borderColor: trainingResult.get_testData_result.get_truepositives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_testData_result.get_truepositives
       ),
       borderWidth: 1,
       pointRadius: 5,
@@ -41,8 +41,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_truenegatives
       ),
-      borderColor: trainingResult.get_testData_result.get_truenegatives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_testData_result.get_truenegatives
       ),
       borderWidth: 1,
       pointRadius: 5,
@@ -52,8 +52,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_falsepositives
       ),
-      borderColor: trainingResult.get_testData_result.get_falsepositives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_testData_result.get_falsepositives
       ),
       borderWidth: 1,
       pointRadius: 5,
@@ -64,8 +64,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_testData_result.get_falsenegatives
       ),
-      borderColor: trainingResult.get_testData_result.get_falsenegatives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_testData_result.get_falsenegatives
       ),
       pointStyle: "rectRot",
       borderWidth: 1,
@@ -78,8 +78,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_truepositives
       ),
-      borderColor: trainingResult.get_trainData_result.get_truepositives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_trainData_result.get_truepositives
       ),
       borderWidth: 1,
       pointRadius: 5,
@@ -89,19 +89,18 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_truenegatives
       ),
-      borderColor: trainingResult.get_trainData_result.get_truenegatives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_trainData_result.get_truenegatives
       ),
       borderWidth: 1,
       pointRadius: 5,
     };
     const positiveTrainIncorrectDataset: IChartDataset = {
-      label: "Class 1",
       data: convertToPoints(
         trainingResult.get_trainData_result.get_falsepositives
       ),
-      borderColor: trainingResult.get_trainData_result.get_falsepositives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_trainData_result.get_falsepositives
       ),
       borderWidth: 1,
       pointRadius: 5,
@@ -112,8 +111,8 @@ export default function CardPredictions(props: {
       data: convertToPoints(
         trainingResult.get_trainData_result.get_falsenegatives
       ),
-      borderColor: trainingResult.get_trainData_result.get_falsenegatives.map(
-        (o) => (o.label === 1 ? PINK : BLUE)
+      borderColor: getChartColor(
+        trainingResult.get_trainData_result.get_falsenegatives
       ),
       pointStyle: "rectRot",
       borderWidth: 1,
