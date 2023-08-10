@@ -10,7 +10,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="mt-4 prose-xl dark:text-gray-300 max-w-3xl mx-auto">
+      <div className="mt-4 prose-lg lg:prose-xl dark:text-gray-300 max-w-3xl mx-auto">
         <p>
           Modern deep learning frameworks are too big. PyTorch and TensorFlow
           are hundreds of thousands of lines of code; their immense complexity
@@ -23,7 +23,7 @@ export default function About() {
           {" "}
           <a
             href="https://github.com/jettblu/nanograd_web"
-            className="text-purple-300 dark:text-purple-900 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
+            className="text-purple-300 dark:text-purple-600 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -34,7 +34,7 @@ export default function About() {
         <p>
           <a
             href="https://github.com/jettblu/nanograd"
-            className="text-purple-300 dark:text-purple-900 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
+            className="text-purple-300 dark:text-purple-600 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
             target="_blank"
             rel="noopener noreferrer"
           >
