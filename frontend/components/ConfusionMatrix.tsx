@@ -76,7 +76,7 @@ export default function ConfusionMatrix(params: {
             {/* tn*/}
             <div className="relative rounded-br-md">
               <div
-                className="bg-red-400 w-full h-full absolute z-0 rounded-br-md"
+                className="bg-green-400 w-full h-full absolute z-0 rounded-br-md"
                 style={{ opacity: confusionMatrix.trueNegatives.percentage }}
               />
               <div className="flex flex-col space-y-1 w-full h-full z-2 px-2 py-2">
