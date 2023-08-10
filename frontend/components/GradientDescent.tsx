@@ -11,20 +11,16 @@ import {
   DEFAULT_NUMBER_OF_EPOCHS,
   MAX_EPOCHS,
   MAX_LEARNING_RATE,
-  MAX_TRAIN_PERCENT,
   MIN_EPOCHS,
   MIN_LEARNING_RATE,
-  MIN_TRAIN_PERCENT,
-  STEP_TRAIN_PERCENT,
 } from "@/constants/network";
 import { DatasetName } from "@/data/types";
 import { SelectDataset } from "./SelectDataset";
 import { ITrainingResult } from "@/network/types";
-import Slider from "./Slider";
-import { DEFAULT_POINT_COLOR } from "@/constants/style";
 import CardPredictions from "./CardPredictions";
 import CardStats from "./CardStats";
 import CardLoss from "./CardLoss";
+import Link from "next/link";
 
 export interface LearningEpoch {
   epoch: number;
@@ -185,10 +181,22 @@ export function GradientDescent() {
       <div className="flex flex-col lg:flex-row w-full lg:divide-x-2 divide-gray-500/30">
         <div className="lg:w-1/2 mx-auto mb-4 lg:mb-0 sm:max-w-lg md:max-w-lg lg:max-w-2xl">
           <h1 className="text-2xl font-bold mb-4">Nanograd</h1>
-          <p className="text-md text-gray-500 mb-4">
-            Nanograd is a tiny deep learning library, implemented in Rust. Use
-            the controls below to train a neural network with gradient descent.
-          </p>
+          <div className="mb-4">
+            <p className="text-md text-gray-500">
+              Nanograd is a tiny deep learning library, implemented in Rust. Use
+              the controls below to train a neural network with gradient
+              descent.
+            </p>
+            <p>
+              <Link
+                href={"/about"}
+                className="text-purple-500 dark:text-purple-600 hover:text-purple-500 hover:dark:text-purple-500 hover:curosr-pointer transition-colors duration-200"
+              >
+                Learn more
+              </Link>
+            </p>
+          </div>
+
           {/* controls */}
           <div className="max-w-sm flex flex-col space-y-4">
             <InputNumber
