@@ -10,7 +10,7 @@ function TrackPageView() {
   const searchParams = useSearchParams();
   useEffect(() => {
     load("MCSERRWK;", {
-      includedDomains: ["nanograd.xyz"],
+      includedDomains: ["nanograd.xyz", "www.nanograd.xyz"],
     });
   }, []);
 
