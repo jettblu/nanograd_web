@@ -2,6 +2,7 @@ import Navbar from "@/components/navigation/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Fathom from "@/components/Fathom";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={`${inter.className} lg:mb-8 mb-[250px] px-3`}>
         <Navbar />
         {children}
+        <Fathom />
       </body>
     </html>
   );
