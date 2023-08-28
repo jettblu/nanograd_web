@@ -84,7 +84,7 @@ export default function ChartLine(params: {
       />
     </div>
   ) : (
-    <div className="w-full max-w-lg h-96 bg-gray-500/20 rounded-md flex items-center justify-center mx-auto">
+    <div className="w-full max-w-lg h-[560px] bg-gray-500/10 rounded-md flex items-center justify-center mx-auto">
       <p className="text-gray-500 text-xl">No data to display</p>
     </div>
   );

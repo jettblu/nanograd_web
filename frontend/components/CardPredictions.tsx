@@ -195,7 +195,11 @@ export default function CardPredictions(props: {
                 : viewType == ViewType.TEST
                 ? "training data"
                 : "test data"}{" "}
-              colored by class. Incorrect predictions are shown as diamonds.
+              colored by class.{" "}
+              <span className="font-semibold">
+                Incorrect predictions are shown as diamonds
+              </span>
+              .
             </p>
           </div>
         </div>
