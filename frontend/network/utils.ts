@@ -10,6 +10,8 @@ import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
  * @returns true if the prediction is correct
  */
 function classify(pred: number, actual: number) {
+  console.log("pred: ", pred);
+  console.log("actual: ", actual);
   if (pred > 0 && actual > 0) {
     return true;
   }
@@ -49,10 +51,10 @@ export function newTrainingResult(params: {
       train_truepositives.push(data[i]);
     }
     if (isPredCorrect && actual === -1) {
-      train_falsepositives.push(data[i]);
+      train_truenegatives.push(data[i]);
     }
     if (!isPredCorrect && actual === -1) {
-      train_truenegatives.push(data[i]);
+      train_falsepositives.push(data[i]);
     }
     if (!isPredCorrect && actual === 1) {
       train_falsenegatives.push(data[i]);
@@ -71,10 +73,10 @@ export function newTrainingResult(params: {
       test_truepositives.push(data[i + trainCount]);
     }
     if (isPredCorrect && actual === -1) {
-      test_falsepositives.push(data[i + trainCount]);
+      test_truenegatives.push(data[i + trainCount]);
     }
     if (!isPredCorrect && actual === -1) {
-      test_truenegatives.push(data[i + trainCount]);
+      test_falsepositives.push(data[i + trainCount]);
     }
     if (!isPredCorrect && actual === 1) {
       test_falsenegatives.push(data[i + trainCount]);
