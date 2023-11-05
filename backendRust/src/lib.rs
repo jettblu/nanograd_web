@@ -208,20 +208,21 @@ pub fn run_gradient_sample(dataset:String, learning_rate: f64, num_epochs: u8, h
             .map(|v| v.data())
             .collect();
         // convert to 0 or 1
+        let threshold = 0.0;
         let mut test_predictions: Vec<f64> = test_ypred_floats.clone();
         test_predictions.iter_mut().for_each(|p| {
-            if *p > 0.5 {
+            if *p > threshold {
                 *p = 1.0;
             } else {
-                *p = 0.0;
+                *p = -1.0;
             }
         });
         let mut test_ys_copy = test_ys.clone();
         test_ys_copy.iter_mut().for_each(|p| {
-            if *p > 0.5 {
+            if *p > threshold {
                 *p = 1.0;
             } else {
-                *p = 0.0;
+                *p = -1.0;
             }
         });
         // compute classification accuracy
