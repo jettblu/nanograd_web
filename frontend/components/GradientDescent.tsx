@@ -21,8 +21,8 @@ import CardPredictions from "./CardPredictions";
 import CardStats from "./CardStats";
 import CardLoss from "./CardLoss";
 import Link from "next/link";
+import DrawChart from "./ChartHeatmap";
 import ChartHeatmap from "./ChartHeatmap";
-import DrawChart from "./DrawChart";
 
 export interface LearningEpoch {
   epoch: number;
@@ -315,7 +315,7 @@ export function GradientDescent() {
                   No predictions yet
                 </div>
               )}
-              <DrawChart trainingResult={trainingResult} />
+              <ChartHeatmap trainingResult={trainingResult} />
             </div>
           )}
           {resultView === ResultView.Stats && (

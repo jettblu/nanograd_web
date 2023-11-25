@@ -242,7 +242,7 @@ function generateChart(
     .style("fill", "pink");
 }
 
-export default function DrawChart(props: {
+export default function ChartHeatmap(props: {
   trainingResult: ITrainingResult | null;
 }) {
   const svg = useRef<SVGSVGElement>(null);
