@@ -1,6 +1,10 @@
 import { loadData } from "@/data";
 import { DatasetName, IObservation } from "@/data/types";
-import { IConfusionMatrix, ITrainingResult } from "./types";
+import {
+  IConfusionMatrix,
+  IPointWithPrediction,
+  ITrainingResult,
+} from "./types";
 import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
 
 /**
@@ -10,8 +14,6 @@ import { TrainingResult as NanoTrainoingResult } from "nanograd_web";
  * @returns true if the prediction is correct
  */
 function classify(pred: number, actual: number) {
-  console.log("pred: ", pred);
-  console.log("actual: ", actual);
   if (pred > 0 && actual > 0) {
     return true;
   }
@@ -34,6 +36,9 @@ export function newTrainingResult(params: {
     get_num_epochs,
     get_classification_error,
     get_predictions,
+    get_grid_predictions,
+    get_grid_xs,
+    get_grid_ys,
   } = nanoTrainingResult;
   const testPreds = get_predictions.slice(trainCount, get_predictions.length);
   const trainPreds = get_predictions.slice(0, trainCount);
@@ -96,6 +101,14 @@ export function newTrainingResult(params: {
     get_falsenegatives: train_falsenegatives,
     get_observationCount: trainPreds.length,
   };
+  const grid_points_with_predictions: IPointWithPrediction[] = [];
+  for (let i = 0; i < get_grid_predictions.length; i++) {
+    grid_points_with_predictions.push({
+      x: get_grid_xs[i],
+      y: get_grid_ys[i],
+      prediction: get_grid_predictions[i],
+    });
+  }
   return {
     get_loss,
     get_network_dimensions,
@@ -106,6 +119,7 @@ export function newTrainingResult(params: {
     get_testData_result,
     get_trainData_result,
     get_timeToTrain: timeToTrain,
+    get_grid_points: grid_points_with_predictions,
   };
 }
 

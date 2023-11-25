@@ -10,6 +10,7 @@ export type ITrainingResult = {
   readonly get_testData_result: ITestDataResult;
   readonly get_trainData_result: ITrainDataResult;
   readonly get_timeToTrain: number;
+  get_grid_points: IPointWithPrediction[];
 };
 
 export type ITestDataResult = {
@@ -47,3 +48,12 @@ export type ConfusionMatrixValue = {
   readonly count: number;
   readonly percentage: number;
 };
+
+export interface IPoint {
+  x: number;
+  y: number;
+}
+
+export interface IPointWithPrediction extends IPoint {
+  prediction: number;
+}
