@@ -213,15 +213,24 @@ export class TrainingResult {
     * @param {Uint32Array} network_dimensions
     * @param {Float64Array} predictions
     * @param {number} classification_error
+    * @param {Float64Array} grid_predictions
+    * @param {Float64Array} grid_xs
+    * @param {Float64Array} grid_ys
     */
-    constructor(loss, network_dimensions, predictions, classification_error) {
+    constructor(loss, network_dimensions, predictions, classification_error, grid_predictions, grid_xs, grid_ys) {
         const ptr0 = passArrayF64ToWasm0(loss, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passArray32ToWasm0(network_dimensions, wasm.__wbindgen_malloc);
         const len1 = WASM_VECTOR_LEN;
         const ptr2 = passArrayF64ToWasm0(predictions, wasm.__wbindgen_malloc);
         const len2 = WASM_VECTOR_LEN;
-        const ret = wasm.trainingresult_new(ptr0, len0, ptr1, len1, ptr2, len2, classification_error);
+        const ptr3 = passArrayF64ToWasm0(grid_predictions, wasm.__wbindgen_malloc);
+        const len3 = WASM_VECTOR_LEN;
+        const ptr4 = passArrayF64ToWasm0(grid_xs, wasm.__wbindgen_malloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ptr5 = passArrayF64ToWasm0(grid_ys, wasm.__wbindgen_malloc);
+        const len5 = WASM_VECTOR_LEN;
+        const ret = wasm.trainingresult_new(ptr0, len0, ptr1, len1, ptr2, len2, classification_error, ptr3, len3, ptr4, len4, ptr5, len5);
         return TrainingResult.__wrap(ret);
     }
     /**
@@ -283,10 +292,82 @@ export class TrainingResult {
         wasm.trainingresult_set_predictions(this.__wbg_ptr, ptr0, len0);
     }
     /**
+    * @param {Float64Array} grid_predictions
+    */
+    set grid_predictions(grid_predictions) {
+        const ptr0 = passArrayF64ToWasm0(grid_predictions, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.trainingresult_set_grid_predictions(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+    * @param {Float64Array} grid_xs
+    */
+    set grid_xs(grid_xs) {
+        const ptr0 = passArrayF64ToWasm0(grid_xs, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.trainingresult_set_grid_xs(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+    * @param {Float64Array} grid_ys
+    */
+    set grid_ys(grid_ys) {
+        const ptr0 = passArrayF64ToWasm0(grid_ys, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.trainingresult_set_grid_ys(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
     * @param {number} classification_error
     */
     set classification_error(classification_error) {
         wasm.trainingresult_set_classification_error(this.__wbg_ptr, classification_error);
+    }
+    /**
+    * @returns {Float64Array}
+    */
+    get get_grid_predictions() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.trainingresult_get_grid_predictions(retptr, this.__wbg_ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v1 = getArrayF64FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 8);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {Float64Array}
+    */
+    get get_grid_xs() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.trainingresult_get_grid_xs(retptr, this.__wbg_ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v1 = getArrayF64FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 8);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {Float64Array}
+    */
+    get get_grid_ys() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.trainingresult_get_grid_ys(retptr, this.__wbg_ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v1 = getArrayF64FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 8);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
     }
     /**
     * @returns {number}

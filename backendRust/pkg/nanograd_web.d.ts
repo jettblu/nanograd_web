@@ -23,8 +23,11 @@ export class TrainingResult {
 * @param {Uint32Array} network_dimensions
 * @param {Float64Array} predictions
 * @param {number} classification_error
+* @param {Float64Array} grid_predictions
+* @param {Float64Array} grid_xs
+* @param {Float64Array} grid_ys
 */
-  constructor(loss: Float64Array, network_dimensions: Uint32Array, predictions: Float64Array, classification_error: number);
+  constructor(loss: Float64Array, network_dimensions: Uint32Array, predictions: Float64Array, classification_error: number, grid_predictions: Float64Array, grid_xs: Float64Array, grid_ys: Float64Array);
 /**
 */
   increment_num_epochs(): void;
@@ -34,6 +37,15 @@ export class TrainingResult {
 /**
 */
   readonly get_classification_error: number;
+/**
+*/
+  readonly get_grid_predictions: Float64Array;
+/**
+*/
+  readonly get_grid_xs: Float64Array;
+/**
+*/
+  readonly get_grid_ys: Float64Array;
 /**
 */
   readonly get_loss: Float64Array;
@@ -46,6 +58,15 @@ export class TrainingResult {
 /**
 */
   readonly get_predictions: Float64Array;
+/**
+*/
+  grid_predictions: Float64Array;
+/**
+*/
+  grid_xs: Float64Array;
+/**
+*/
+  grid_ys: Float64Array;
 /**
 */
   new_loss: number;
@@ -84,14 +105,20 @@ export interface InitOutput {
   readonly updateresult_get_epoch: (a: number) => number;
   readonly updateresult_to_json: (a: number, b: number) => void;
   readonly __wbg_trainingresult_free: (a: number) => void;
-  readonly trainingresult_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => number;
+  readonly trainingresult_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => number;
   readonly trainingresult_get_loss: (a: number, b: number) => void;
   readonly trainingresult_get_network_dimensions: (a: number, b: number) => void;
   readonly trainingresult_get_num_epochs: (a: number) => number;
   readonly trainingresult_increment_num_epochs: (a: number) => void;
   readonly trainingresult_set_new_loss: (a: number, b: number) => void;
   readonly trainingresult_set_predictions: (a: number, b: number, c: number) => void;
+  readonly trainingresult_set_grid_predictions: (a: number, b: number, c: number) => void;
+  readonly trainingresult_set_grid_xs: (a: number, b: number, c: number) => void;
+  readonly trainingresult_set_grid_ys: (a: number, b: number, c: number) => void;
   readonly trainingresult_set_classification_error: (a: number, b: number) => void;
+  readonly trainingresult_get_grid_predictions: (a: number, b: number) => void;
+  readonly trainingresult_get_grid_xs: (a: number, b: number) => void;
+  readonly trainingresult_get_grid_ys: (a: number, b: number) => void;
   readonly trainingresult_get_classification_error: (a: number) => number;
   readonly trainingresult_get_predictions: (a: number, b: number) => void;
   readonly run_gradient_sample: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
