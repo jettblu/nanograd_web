@@ -59,12 +59,12 @@ function generateChart(
   const xScaleLinear = d3
     .scaleLinear()
     .domain([xMin!, xMax!])
-    .range([0, width - bandwidth_x]);
+    .range([0, width]);
 
   const yScaleLinear = d3
     .scaleLinear()
     .domain([yMin!, yMax!])
-    .range([height - bandwidth_y, 0]);
+    .range([height, 0]);
 
   const xScale = d3
     .scaleBand()
@@ -306,7 +306,7 @@ export default function ChartHeatmap(props: {
     if (!trainingResult) {
       return;
     }
-    generateChart(svg, container, trainingResult, width, height);
+    generateChart(svg, container, trainingResult, width, height, showTrainData);
   }, [trainingResult]);
 
   useEffect(() => {
@@ -316,7 +316,7 @@ export default function ChartHeatmap(props: {
     if (lastSize === width) {
       return;
     }
-    generateChart(svg, container, trainingResult, width, height);
+    generateChart(svg, container, trainingResult, width, height, showTrainData);
     setLastSize(width);
   }, [width, height]);
 
