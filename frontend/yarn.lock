@@ -2270,10 +2270,10 @@ mz@^2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nanograd_web@^0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/nanograd_web/-/nanograd_web-0.3.9.tgz#5b6483bfd1f137d5639e8b7e0b62e7f99b3d6908"
-  integrity sha512-dys47EphoBYe8Nvvkrj4rq2ygttc2IpyJi4CJUjPZ6taA2YP2O7K3kK83VyLwZv+Z9GO/6pqfkioakK3f/R54g==
+nanograd_web@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/nanograd_web/-/nanograd_web-0.4.1.tgz#3ccc5705f5b6e7aacc365563bec43a62ff796ff2"
+  integrity sha512-c9jBfOsSFUDgbLoWun3XVYWjFRJpDaQ8zEdYbeiL/DoKlt/uX+KTLiIkRrtLAykFQk/AYTH5moWUQggsNpnuIg==
 
 nanoid@^3.3.4, nanoid@^3.3.6:
   version "3.3.6"

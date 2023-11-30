@@ -325,33 +325,37 @@ pub fn run_gradient_sample(
     let mut max_x = train_xs[0][0];
     let mut min_y = train_xs[0][1];
     let mut max_y = train_xs[0][1];
-    for x in train_xs {
-        if x[0] < min_x {
-            min_x = x[0];
+    for features in train_xs {
+        let x = features[0];
+        let y = features[1];
+         if x < min_x {
+            min_x = x;
         }
-        if x[0] > max_x {
-            max_x = x[0];
+        if x > max_x {
+            max_x = x;
         }
-        if x[1] < min_y {
-            min_y = x[1];
+        if y < min_y {
+            min_y = y;
         }
-        if x[1] > max_y {
-            max_y = x[1];
+        if y > max_y {
+            max_y = y;
         }
     }
     // now compare to test set
-    for x in test_xs {
-        if x[0] < min_x {
-            min_x = x[0];
+    for features in test_xs {
+        let x = features[0];
+        let y = features[1];
+        if x < min_x {
+            min_x = x;
         }
-        if x[0] > max_x {
-            max_x = x[0];
+        if x > max_x {
+            max_x = x;
         }
-        if x[1] < min_y {
-            min_y = x[1];
+        if y < min_y {
+            min_y = y;
         }
-        if x[1] > max_y {
-            max_y = x[1];
+        if y > max_y {
+            max_y = y;
         }
     }
     // add percentage of range to min and max
@@ -411,8 +415,14 @@ fn generate_grid(
     let y_step = y_range / (num_squares as f64);
     for i in 0..num_squares {
         for j in 0..num_squares {
-            let x = x_min + (i as f64) * x_step;
-            let y = y_min + (j as f64) * y_step;
+            // add 0.5 to get center of square
+            // convert i to f64
+            let i_float = i as f64;
+            let j_float = j as f64;
+            let i_prime =  i_float+0.5;
+            let j_prime = j_float+0.5;
+            let x = x_min + (i_prime as f64) * x_step;
+            let y = y_min + (j_prime as f64) * y_step; 
             grid.push((x, y));
         }
     }
