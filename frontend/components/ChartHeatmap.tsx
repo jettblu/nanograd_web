@@ -19,7 +19,7 @@ function generateChart(
   showTrainData = false
 ) {
   if (!trainingResult) {
-    console.log("no training result");
+    console.warn("No training result to display");
     return;
   }
 
@@ -41,7 +41,6 @@ function generateChart(
     p.x = Math.round(p.x * 100) / 100;
     p.y = Math.round(p.y * 100) / 100;
   });
-  console.log(trainingResult);
   // get set of y values
   const ySet = new Set<number>();
   gridPreds.map((p) => ySet.add(p.y));
@@ -275,8 +274,6 @@ export default function ChartHeatmap(props: {
   const [lastSize, setLastSize] = useState(0);
   useEffect(() => {
     function handleResize() {
-      console.log(window.innerWidth);
-      console.log(window.innerHeight);
       if (window.innerWidth < 600) {
         setWidth(window.innerWidth * 0.8);
         setHeight(window.innerWidth * 0.8);
@@ -293,7 +290,6 @@ export default function ChartHeatmap(props: {
   const svg = useRef<SVGSVGElement>(null);
   const container = useRef<HTMLDivElement>(null);
   function handleShowTrainData() {
-    console.log("show train data");
     const newTrainToggle = !showTrainData;
     generateChart(
       svg,
