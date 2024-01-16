@@ -226,7 +226,7 @@ function generateChart(
     .attr("cy", (d) => yScaleLinear(d.features[1])!)
     .attr("r", 5)
     .style("fill", purpleDotColor);
-  // plot the true positives for training data
+  // plot the true positives for training data!
   svg
     .selectAll()
     .data(trainingResult.get_trainData_result.get_truepositives)
@@ -343,7 +343,7 @@ export default function ChartHeatmap(props: {
             incorrect predictions.
           </li>
           <li>
-            Purple dots represent the negative class and ink dots represent the
+            Purple dots represent the negative class and pink dots represent the
             positive class.
           </li>
         </ol>
